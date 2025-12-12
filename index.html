@@ -12,15 +12,15 @@
         /* ヘッダー */
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         h1 { font-size: 1.3rem; font-weight: 800; margin: 0; }
+        .btn-settings { background: #E5E5EA; color: #333; border: 1px solid #ccc; padding: 8px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.85rem; }
 
         /* マップ */
         #map-area { height: 400px; background: #ddd; border-radius: var(--radius); margin-bottom: 15px; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
         #map-msg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #555; font-weight: bold; background: rgba(255,255,255,0.9); padding: 15px; border-radius: 12px; width: 80%; text-align: center; }
 
-        /* フィルタエリア (3列) */
+        /* フィルタエリア */
         .filter-area { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-        @media (max-width: 600px) { .filter-area { grid-template-columns: 1fr; } } /* スマホは縦並び */
-        
+        @media (max-width: 600px) { .filter-area { grid-template-columns: 1fr; } }
         select { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #ccc; background: #fff; font-size: 0.85rem; font-weight: bold; color: var(--primary); appearance: none; -webkit-appearance: none; }
 
         /* 検索窓 */
@@ -28,7 +28,7 @@
         .search-box input { width: 100%; padding: 12px 12px 12px 40px; border-radius: 12px; border: 2px solid var(--primary); background: #fff; font-size: 16px; box-sizing: border-box; }
         .search-icon { position: absolute; left: 12px; top: 12px; font-size: 1.2rem; color: var(--primary); }
 
-        /* メニューカード (シンプルデザイン) */
+        /* メニューカード */
         .card { background: var(--card); padding: 15px; border-radius: var(--radius); box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
         h3 { margin: 0; font-size: 1rem; color: var(--primary); cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
         
@@ -39,7 +39,7 @@
         /* ボタン */
         button { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; font-size: 15px; transition: opacity 0.2s; margin-top: 10px; }
         button:active { opacity: 0.7; }
-        .btn-main { background: var(--primary); color: white; } /* 青ボタン */
+        .btn-main { background: var(--primary); color: white; }
         .btn-sub { background: #E5E5EA; color: #333; font-size: 0.85rem; }
         .btn-danger { background: #FF3B30; color: white; margin-top: 15px; }
         .btn-key { background: #34C759; color: white; width: auto; padding: 8px 15px; font-size: 0.85rem; margin-top: 0; margin-left: 5px; }
@@ -48,21 +48,25 @@
         /* リスト表示 */
         .station-group { background: var(--card); border-radius: 12px; overflow: hidden; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
         .station-header { background: rgba(0,122,255,0.08); padding: 10px 15px; color: var(--primary); font-weight: bold; font-size: 0.95rem; }
-        
         .customer-item { padding: 12px 15px; border-bottom: 1px solid #f5f5f5; display: flex; justify-content: space-between; align-items: flex-start; }
-        .customer-item:last-child { border-bottom: none; }
-        
         .info-main { font-weight: bold; font-size: 1rem; margin-bottom: 3px; color: #333; }
         .info-sub { font-size: 0.8rem; color: #666; margin-bottom: 2px; line-height: 1.3; }
         .tag { display: inline-block; background: #eee; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; color: #555; margin-right: 5px; font-family: monospace; }
         
-        /* アクションアイコン */
         .action-area { display: flex; gap: 12px; margin-top: 5px; }
         .icon-btn { text-decoration: none; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: #F2F2F7; border-radius: 50%; font-size: 1.2rem; color: #333; transition: background 0.2s; }
         .icon-btn:active { background: #d1d1d6; }
         .icon-btn.call { color: #34C759; }
         .icon-btn.map { color: var(--primary); }
 
+        /* 吹き出し */
+        .info-window { padding: 5px; max-width: 240px; font-family: sans-serif; }
+        .info-title { font-weight: bold; font-size: 1rem; margin-bottom: 5px; }
+        .info-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 8px; }
+        .info-btn { padding: 6px; border-radius: 6px; border: none; font-size: 0.75rem; cursor: pointer; font-weight: bold; text-align: center; text-decoration: none; color: #fff; }
+        .ib-edit { background: #8E8E93; }
+        .ib-route { background: #34C759; }
+        
         /* ログ */
         #log-area { display:none; background:#222; color:#fff; padding:10px; border-radius:8px; height:80px; overflow-y:scroll; font-family:monospace; font-size:0.75rem; margin-bottom:15px; }
         .log-ok { color:#34C759; } .log-warn { color:#FFD60A; } .log-err { color:#FF3B30; }
@@ -71,12 +75,20 @@
         /* モーダル */
         .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:none; justify-content:center; align-items:center; z-index:9999; }
         .modal-content { background:#fff; padding:20px; border-radius:16px; width:90%; max-width:400px; max-height:90vh; overflow-y:auto; }
+        
+        /* データ管理リスト */
+        .data-list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; }
+        .data-key { font-weight: bold; font-size: 0.9rem; }
+        .data-del-btn { background: #FF3B30; color: white; border: none; padding: 5px 10px; border-radius: 5px; font-size: 0.75rem; cursor: pointer; margin-top:0;}
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header"><h1>顧客DB Pro</h1></div>
+    <div class="header">
+        <h1>顧客DB Pro</h1>
+        <button class="btn-settings" onclick="openSettings()">⚙️ 設定・管理</button>
+    </div>
 
     <div id="map-area"><span id="map-msg">APIキーを設定すると地図が表示されます</span></div>
 
@@ -100,7 +112,7 @@
                 <button class="btn-key" onclick="saveKeyAndInit()">キー保存</button>
             </div>
             
-            <label>担当者名 (オプション)</label>
+            <label>担当者名</label>
             <input type="text" id="repName" placeholder="例: 佐藤">
             
             <label>リスト貼り付け (6列: Rコード|法人名|店舗名|住所|ビル名|電話)</label>
@@ -114,7 +126,7 @@
                 <input type="file" id="fileInput" style="display:none" onchange="uploadData(this)">
             </div>
 
-            <button class="btn-danger" onclick="clearAll()">全データ削除</button>
+            <button class="btn-danger" onclick="clearAll()">このDBを全削除</button>
         </div>
     </div>
 
@@ -144,10 +156,28 @@
     </div>
 </div>
 
+<div id="settingsModal" class="modal-overlay">
+    <div class="modal-content">
+        <h3 style="text-align:center; margin-top:0;">設定・データ管理</h3>
+        
+        <div style="background:#F2F2F7; padding:10px; border-radius:8px; margin-bottom:15px;">
+            <div style="font-size:0.8rem; font-weight:bold; color:#666; margin-bottom:5px;">現在使用中のDB名</div>
+            <div style="font-weight:bold; font-family:monospace;" id="current-db-name"></div>
+        </div>
+
+        <div style="margin-bottom:10px; font-weight:bold;">保存されている全データ一覧</div>
+        <div id="storage-list" style="max-height:200px; overflow-y:auto; border:1px solid #eee; border-radius:8px; margin-bottom:15px;">
+            </div>
+
+        <button class="btn-sub" onclick="document.getElementById('settingsModal').style.display='none'">閉じる</button>
+    </div>
+</div>
+
 <script>
-    // ★別の人用にするときはここを変える★
+    // ★★★ 別の人用にするときはここを変える ★★★
     const DB_NAME = "map_db"; 
-    
+    // ★★★★★★★★★★★★★★★★★★★★★★★
+
     let db = [];
     let map, geocoder, Place, AdvancedMarkerElement;
     let markers = [];
@@ -164,7 +194,49 @@
         if(k) document.getElementById('apiKey').value = k;
         if(d) { try { db = JSON.parse(d); populateFilters(); render(); } catch(e){ db=[]; } }
         if(k) initSystem(k).then(()=>{ document.getElementById('map-msg').style.display='none'; }).catch(()=>{});
+        
+        document.getElementById('current-db-name').innerText = DB_NAME;
     };
+
+    // --- データ管理機能 (New!) ---
+    function openSettings() {
+        const list = document.getElementById('storage-list');
+        list.innerHTML = "";
+        
+        // localStorageの全キーを走査
+        for(let i=0; i<localStorage.length; i++) {
+            const key = localStorage.key(i);
+            // map_db または map_で始まるキーを表示 (APIキーは除くか、必要なら表示)
+            if(key.startsWith('map_db')) {
+                let size = "";
+                try {
+                    const content = JSON.parse(localStorage.getItem(key));
+                    if(Array.isArray(content)) size = `(${content.length}件)`;
+                } catch(e) {}
+
+                const div = document.createElement('div');
+                div.className = 'data-list-item';
+                div.innerHTML = `
+                    <div class="data-key">${key} <span style="font-weight:normal;font-size:0.8rem">${size}</span></div>
+                    <button class="data-del-btn" onclick="forceDelete('${key}')">削除</button>
+                `;
+                list.appendChild(div);
+            }
+        }
+        if(list.innerHTML === "") list.innerHTML = "<div style='padding:10px;color:#999;text-align:center'>データはありません</div>";
+        document.getElementById('settingsModal').style.display = 'flex';
+    }
+
+    function forceDelete(key) {
+        if(confirm(`本当に「${key}」を削除しますか？\n（復元できません）`)) {
+            localStorage.removeItem(key);
+            openSettings(); // リスト更新
+            if(key === DB_NAME) {
+                db = []; render(); updateMapPins([]); // 現在の表示もクリア
+            }
+            alert("削除しました");
+        }
+    }
 
     async function saveKeyAndInit() {
         const k=document.getElementById('apiKey').value; if(!k)return alert("APIキーを入れて");
@@ -208,7 +280,6 @@
                 if(!line) continue;
                 
                 const cols = line.split(/\t/).map(s=>s.trim());
-                // 0:Rコード 1:法人 2:店舗 3:住所 4:ビル 5:電話
                 let r = cols[0]||"";
                 let corp = cols[1]||"";
                 let store = cols[2]||"";
@@ -220,9 +291,8 @@
                 if(!fullName) fullName = "名称不明";
                 let fullAddr = (addr + " " + bldg).trim();
                 
-                // 必須チェック(住所なしはスキップ)
                 if(!fullAddr) {
-                    if(cols.length <= 3 && cols[1]) { fullName=cols[0]; fullAddr=cols[1]; r=""; tel=""; } // 互換性
+                    if(cols.length <= 3 && cols[1]) { fullName=cols[0]; fullAddr=cols[1]; r=""; tel=""; } 
                     else continue;
                 }
 
@@ -239,7 +309,7 @@
                         id: Date.now().toString(36)+Math.random(), 
                         r_code: r, name: fullName, address: fullAddr, tel: tel,
                         station: stName, lat: coords.lat, lng: coords.lng, 
-                        rep_name: rep, time:"", note:"" 
+                        rep_name: rep, time:"", note:""
                     };
                     if(existIdx !== -1) db[existIdx] = newData; else db.push(newData);
                     log(`OK: ${stName}`, "ok");
@@ -267,7 +337,7 @@
     async function getStationNew(c) { try { const {places} = await Place.searchNearby({ locationRestriction:{center:c, radius:2000}, includedPrimaryTypes:['train_station','subway_station'], maxResultCount:1, fields:['displayName']}); return (places&&places.length>0) ? places[0].displayName+(places[0].displayName.endsWith("駅")?"":"駅") : "駅なし(2km圏外)"; } catch(e){throw e;} }
     function withTimeout(p, ms) { return new Promise((res, rej) => { const t = setTimeout(()=>rej("Timeout"), ms); p.then(v=>{clearTimeout(t);res(v)}, e=>{clearTimeout(t);rej(e)}); }); }
 
-    // --- ピン & 吹き出し ---
+    // --- ピン・リスト表示 ---
     function updateMapPins(list) {
         if(!map || !AdvancedMarkerElement) return;
         markers.forEach(m => m.setMap(null)); markers = [];
@@ -280,8 +350,8 @@
                 
                 m.addListener("click", () => {
                     infoWindow.setContent(`
-                        <div style="font-family:sans-serif; padding:5px; min-width:200px;">
-                            <div style="font-weight:bold; font-size:1rem; margin-bottom:5px;">${c.name}</div>
+                        <div class="info-window">
+                            <div class="info-title">${c.name}</div>
                             <div style="font-size:0.8rem;margin-bottom:5px;">担当: ${c.rep_name||""} <br> R: ${c.r_code||"-"}</div>
                             ${telHtml}
                             <div style="font-size:0.8rem;color:#666;margin-bottom:5px;">${c.address}</div>
@@ -312,10 +382,7 @@
         sSel.innerHTML='<option value="ALL">最寄り駅: 全て</option>';
         rSel.innerHTML='<option value="ALL">担当: 全員</option>';
 
-        // 都道府県
         [...new Set(db.map(x=>getPrefecture(x.address)))].sort((a,b)=>PREF_ORDER.indexOf(a)-PREF_ORDER.indexOf(b)).forEach(p=>{const o=document.createElement('option');o.value=p;o.innerText=p;pSel.appendChild(o)});
-        
-        // 担当者 (New!)
         [...new Set(db.map(x=>x.rep_name||""))].filter(x=>x).sort().forEach(r=>{const o=document.createElement('option');o.value=r;o.innerText=r;rSel.appendChild(o)});
         
         updateStationFilter();
@@ -419,7 +486,7 @@
     function downloadData() { if(db.length==0)return alert("なし"); const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(db)],{type:"application/json"})); a.download=`map_db_${new Date().toISOString().slice(0,10)}.json`; a.click(); }
     function uploadData(i) { const f=i.files[0]; if(!f)return; const r=new FileReader(); r.onload=e=>{try{if(confirm("読込しますか？")){db=JSON.parse(e.target.result);saveDB();populateFilters();render();updateMapPins(db);alert("完了");}}catch(z){alert("失敗");}}; r.readAsText(f); }
     function saveDB() { localStorage.setItem(DB_NAME, JSON.stringify(db)); }
-    function clearAll() { if(confirm("全削除？")) { localStorage.removeItem(DB_Yusuke); location.reload(); } }
+    function clearAll() { if(confirm("本当に全削除しますか？")) { localStorage.removeItem(DB_NAME); location.reload(); } }
 </script>
 </body>
 </html>
