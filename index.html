@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>顧客マップDB Pro</title>
+    <title>顧客マップDB Pro (5列版)</title>
     <style>
         :root { --primary: #007AFF; --bg: #F2F2F7; --card: #FFFFFF; --text: #1C1C1E; --gray: #8E8E93; --radius: 12px; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 15px; -webkit-font-smoothing: antialiased; padding-bottom: 100px; }
@@ -112,11 +112,11 @@
                 <button class="btn-key" onclick="saveKeyAndInit()">キー保存</button>
             </div>
             
-            <label>担当者名</label>
+            <label>担当者名 (オプション)</label>
             <input type="text" id="repName" placeholder="例: 佐藤">
             
-            <label>リスト貼り付け (6列: Rコード|法人名|店舗名|住所|ビル名|電話)</label>
-            <textarea id="csvInput" placeholder="R001	(株)ABC	大宮店	埼玉県...	ビル1F	090-1234-5678"></textarea>
+            <label>リスト貼り付け (5列: Rコード|法人名|店舗名|住所|電話)</label>
+            <textarea id="csvInput" placeholder="R001	(株)ABC	大宮店	埼玉県...	090-1234-5678"></textarea>
             
             <button class="btn-main" id="runBtn" onclick="processData()">登録＆分析スタート</button>
             
@@ -198,15 +198,13 @@
         document.getElementById('current-db-name').innerText = DB_NAME;
     };
 
-    // --- データ管理機能 (New!) ---
+    // --- データ管理機能 ---
     function openSettings() {
         const list = document.getElementById('storage-list');
         list.innerHTML = "";
         
-        // localStorageの全キーを走査
         for(let i=0; i<localStorage.length; i++) {
             const key = localStorage.key(i);
-            // map_db または map_で始まるキーを表示 (APIキーは除くか、必要なら表示)
             if(key.startsWith('map_db')) {
                 let size = "";
                 try {
@@ -230,9 +228,9 @@
     function forceDelete(key) {
         if(confirm(`本当に「${key}」を削除しますか？\n（復元できません）`)) {
             localStorage.removeItem(key);
-            openSettings(); // リスト更新
+            openSettings(); 
             if(key === DB_NAME) {
-                db = []; render(); updateMapPins([]); // 現在の表示もクリア
+                db = []; render(); updateMapPins([]); 
             }
             alert("削除しました");
         }
@@ -259,7 +257,7 @@
         } catch(e) { log("初期化エラー: "+e, "err"); }
     }
 
-    // --- 6列データ処理 ---
+    // --- 5列データ処理 ---
     async function processData() {
         const key = document.getElementById('apiKey').value.trim();
         const csv = document.getElementById('csvInput').value.trim();
@@ -280,23 +278,19 @@
                 if(!line) continue;
                 
                 const cols = line.split(/\t/).map(s=>s.trim());
+                // 0:Rコード 1:法人 2:店舗 3:住所 4:電話
                 let r = cols[0]||"";
                 let corp = cols[1]||"";
                 let store = cols[2]||"";
                 let addr = cols[3]||"";
-                let bldg = cols[4]||"";
-                let tel = cols[5]||"";
+                let tel = cols[4]||"";
 
                 let fullName = (corp + " " + store).trim();
                 if(!fullName) fullName = "名称不明";
-                let fullAddr = (addr + " " + bldg).trim();
+                let cleanAddr = addr.replace(/[\(（](未特定|不明|場所不明|検索エラー).*?[\)）]/g, "").trim();
                 
-                if(!fullAddr) {
-                    if(cols.length <= 3 && cols[1]) { fullName=cols[0]; fullAddr=cols[1]; r=""; tel=""; } 
-                    else continue;
-                }
+                if(!cleanAddr) continue;
 
-                let cleanAddr = fullAddr.replace(/[\(（](未特定|不明|場所不明|検索エラー).*?[\)）]/g, "").trim();
                 document.getElementById('status-log').innerText = `解析中 (${i+1}/${lines.length}): ${fullName}`;
 
                 let existIdx = -1;
@@ -307,7 +301,7 @@
                     const stName = await withTimeout(getStationNew(coords), 3000);
                     const newData = { 
                         id: Date.now().toString(36)+Math.random(), 
-                        r_code: r, name: fullName, address: fullAddr, tel: tel,
+                        r_code: r, name: fullName, address: addr, tel: tel,
                         station: stName, lat: coords.lat, lng: coords.lng, 
                         rep_name: rep, time:"", note:""
                     };
@@ -318,7 +312,7 @@
                     const msg = e.message || e;
                     log(`失敗: ${fullName} (${msg})`, "warn");
                     const failData = { 
-                        id: Date.now().toString(), r_code: r, name: fullName, address: fullAddr, tel: tel,
+                        id: Date.now().toString(), r_code: r, name: fullName, address: addr, tel: tel,
                         station: `未特定`, lat: null, lng: null, rep_name: rep, time:"", note:"" 
                     };
                     if(existIdx !== -1) db[existIdx] = failData; else db.push(failData);
