@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>顧客マップDB Pro (5列版)</title>
+    <title>顧客マップDB Pro</title>
     <style>
         :root { --primary: #007AFF; --bg: #F2F2F7; --card: #FFFFFF; --text: #1C1C1E; --gray: #8E8E93; --radius: 12px; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 15px; -webkit-font-smoothing: antialiased; padding-bottom: 100px; }
@@ -24,9 +24,16 @@
         select { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #ccc; background: #fff; font-size: 0.85rem; font-weight: bold; color: var(--primary); appearance: none; -webkit-appearance: none; }
 
         /* 検索窓 */
-        .search-box { position: relative; margin-bottom: 15px; }
+        .search-box { position: relative; margin-bottom: 10px; }
         .search-box input { width: 100%; padding: 12px 12px 12px 40px; border-radius: 12px; border: 2px solid var(--primary); background: #fff; font-size: 16px; box-sizing: border-box; }
         .search-icon { position: absolute; left: 12px; top: 12px; font-size: 1.2rem; color: var(--primary); }
+
+        /* 集計エリア */
+        #stats-area { background: #fff; border-radius: 12px; padding: 15px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: none; }
+        .stats-total { font-size: 1.1rem; font-weight: 800; color: #333; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+        .stats-item { font-size: 0.85rem; color: #555; display: flex; justify-content: space-between; background: #f9f9f9; padding: 6px 10px; border-radius: 6px; }
+        .stats-count { font-weight: bold; color: var(--primary); }
 
         /* メニューカード */
         .card { background: var(--card); padding: 15px; border-radius: var(--radius); box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
@@ -45,6 +52,10 @@
         .btn-key { background: #34C759; color: white; width: auto; padding: 8px 15px; font-size: 0.85rem; margin-top: 0; margin-left: 5px; }
         .data-tools { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px; }
 
+        /* 「さらに表示」ボタン */
+        .btn-load-more { background: #fff; color: var(--primary); border: 2px solid var(--primary); margin-top: 20px; font-size: 1rem; }
+        .btn-load-more:active { background: #f0f8ff; }
+
         /* リスト表示 */
         .station-group { background: var(--card); border-radius: 12px; overflow: hidden; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
         .station-header { background: rgba(0,122,255,0.08); padding: 10px 15px; color: var(--primary); font-weight: bold; font-size: 0.95rem; }
@@ -55,28 +66,18 @@
         
         .action-area { display: flex; gap: 12px; margin-top: 5px; }
         .icon-btn { text-decoration: none; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: #F2F2F7; border-radius: 50%; font-size: 1.2rem; color: #333; transition: background 0.2s; }
-        .icon-btn:active { background: #d1d1d6; }
         .icon-btn.call { color: #34C759; }
         .icon-btn.map { color: var(--primary); }
 
-        /* 吹き出し */
-        .info-window { padding: 5px; max-width: 240px; font-family: sans-serif; }
-        .info-title { font-weight: bold; font-size: 1rem; margin-bottom: 5px; }
-        .info-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 8px; }
-        .info-btn { padding: 6px; border-radius: 6px; border: none; font-size: 0.75rem; cursor: pointer; font-weight: bold; text-align: center; text-decoration: none; color: #fff; }
-        .ib-edit { background: #8E8E93; }
-        .ib-route { background: #34C759; }
-        
-        /* ログ */
+        /* ログ・モーダル等 */
         #log-area { display:none; background:#222; color:#fff; padding:10px; border-radius:8px; height:80px; overflow-y:scroll; font-family:monospace; font-size:0.75rem; margin-bottom:15px; }
         .log-ok { color:#34C759; } .log-warn { color:#FFD60A; } .log-err { color:#FF3B30; }
         #status-log { text-align: center; color: var(--gray); font-size: 0.85rem; margin: 5px 0; height: 1.2em; }
 
-        /* モーダル */
         .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:none; justify-content:center; align-items:center; z-index:9999; }
         .modal-content { background:#fff; padding:20px; border-radius:16px; width:90%; max-width:400px; max-height:90vh; overflow-y:auto; }
+        .info-window { padding: 5px; max-width: 240px; font-family: sans-serif; }
         
-        /* データ管理リスト */
         .data-list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; }
         .data-key { font-weight: bold; font-size: 0.9rem; }
         .data-del-btn { background: #FF3B30; color: white; border: none; padding: 5px 10px; border-radius: 5px; font-size: 0.75rem; cursor: pointer; margin-top:0;}
@@ -93,61 +94,57 @@
     <div id="map-area"><span id="map-msg">APIキーを設定すると地図が表示されます</span></div>
 
     <div class="filter-area">
-        <select id="prefFilter" onchange="updateStationFilter(); render()"><option value="ALL">都道府県: 全て</option></select>
-        <select id="stationFilter" onchange="render()"><option value="ALL">最寄り駅: 全て</option></select>
-        <select id="repFilter" onchange="render()"><option value="ALL">担当: 全員</option></select>
+        <select id="prefFilter" onchange="resetAndRender()"><option value="ALL">都道府県: 全て</option></select>
+        <select id="stationFilter" onchange="resetAndRender()"><option value="ALL">最寄り駅: 全て</option></select>
+        <select id="repFilter" onchange="resetAndRender()"><option value="ALL">担当: 全員</option></select>
     </div>
     
     <div class="search-box">
         <span class="search-icon">🔍</span>
-        <input type="text" id="searchInput" placeholder="検索 (Rコード, 店名, 住所...)" oninput="render()">
+        <input type="text" id="searchInput" placeholder="検索 (駅名, Rコード, 店名, 住所...)" oninput="resetAndRender()">
+    </div>
+
+    <div id="stats-area">
+        <div class="stats-total" id="stats-total-text"></div>
+        <div class="stats-grid" id="stats-detail"></div>
     </div>
 
     <div class="card">
         <h3 onclick="toggleInput()"><span>＋ 登録・データ移行メニュー</span> <span>▼</span></h3>
         <div id="input-area" style="display:none; margin-top:15px;">
-            
             <div style="display:flex; align-items:center; margin-bottom:10px;">
                 <input type="password" id="apiKey" placeholder="API Key (New API)" style="margin-bottom:0; flex-grow:1;">
                 <button class="btn-key" onclick="saveKeyAndInit()">キー保存</button>
             </div>
-            
-            <label>担当者名 (オプション)</label>
-            <input type="text" id="repName" placeholder="例: 佐藤">
-            
+            <label>担当者名 (オプション)</label><input type="text" id="repName" placeholder="例: 佐藤">
             <label>リスト貼り付け (5列: Rコード|法人名|店舗名|住所|電話)</label>
             <textarea id="csvInput" placeholder="R001	(株)ABC	大宮店	埼玉県...	090-1234-5678"></textarea>
-            
             <button class="btn-main" id="runBtn" onclick="processData()">登録＆分析スタート</button>
-            
             <div class="data-tools">
                 <button class="btn-sub" onclick="downloadData()">💾 PCで保存</button>
                 <button class="btn-sub" onclick="document.getElementById('fileInput').click()">📂 スマホで読込</button>
                 <input type="file" id="fileInput" style="display:none" onchange="uploadData(this)">
             </div>
-
             <button class="btn-danger" onclick="clearAll()">このDBを全削除</button>
         </div>
     </div>
 
-    <div id="log-area"></div>
-    <div id="status-log"></div>
-    <div id="result-area"></div>
+    <div id="log-area"></div><div id="status-log"></div><div id="result-area"></div>
+    <div id="load-more-area" style="text-align:center; display:none;">
+        <button class="btn-load-more" onclick="loadMore()">👇 さらに100件表示</button>
+    </div>
 </div>
 
 <div id="editModal" class="modal-overlay">
     <div class="modal-content">
         <h3 style="text-align:center; margin-top:0;">編集</h3>
         <input type="hidden" id="edit-id"><input type="hidden" id="orig-addr">
-        
         <label>備考</label><textarea id="edit-note" style="height:60px;"></textarea>
-        
         <label>担当</label><input type="text" id="edit-rep">
         <label>Rコード</label><input type="text" id="edit-r">
         <label>名称 (法人名+店舗名)</label><input type="text" id="edit-name">
         <label>電話番号</label><input type="text" id="edit-tel" placeholder="03-1234-5678">
         <label>住所 (変更で自動更新)</label><input type="text" id="edit-addr">
-        
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:15px;">
             <button class="btn-sub" onclick="closeModal()">キャンセル</button>
             <button class="btn-main" onclick="saveEdit()">保存</button>
@@ -159,16 +156,12 @@
 <div id="settingsModal" class="modal-overlay">
     <div class="modal-content">
         <h3 style="text-align:center; margin-top:0;">設定・データ管理</h3>
-        
         <div style="background:#F2F2F7; padding:10px; border-radius:8px; margin-bottom:15px;">
             <div style="font-size:0.8rem; font-weight:bold; color:#666; margin-bottom:5px;">現在使用中のDB名</div>
             <div style="font-weight:bold; font-family:monospace;" id="current-db-name"></div>
         </div>
-
         <div style="margin-bottom:10px; font-weight:bold;">保存されている全データ一覧</div>
-        <div id="storage-list" style="max-height:200px; overflow-y:auto; border:1px solid #eee; border-radius:8px; margin-bottom:15px;">
-            </div>
-
+        <div id="storage-list" style="max-height:200px; overflow-y:auto; border:1px solid #eee; border-radius:8px; margin-bottom:15px;"></div>
         <button class="btn-sub" onclick="document.getElementById('settingsModal').style.display='none'">閉じる</button>
     </div>
 </div>
@@ -177,6 +170,9 @@
     // ★★★ 別の人用にするときはここを変える ★★★
     const DB_NAME = "map_db"; 
     // ★★★★★★★★★★★★★★★★★★★★★★★
+    
+    // 現在の表示件数リミット
+    let currentLimit = 100;
 
     let db = [];
     let map, geocoder, Place, AdvancedMarkerElement;
@@ -192,146 +188,78 @@
         const k = localStorage.getItem('map_apiKey');
         const d = localStorage.getItem(DB_NAME);
         if(k) document.getElementById('apiKey').value = k;
-        if(d) { try { db = JSON.parse(d); populateFilters(); render(); } catch(e){ db=[]; } }
+        if(d) { try { db = JSON.parse(d); populateFilters(); resetAndRender(); } catch(e){ db=[]; } }
         if(k) initSystem(k).then(()=>{ document.getElementById('map-msg').style.display='none'; }).catch(()=>{});
-        
         document.getElementById('current-db-name').innerText = DB_NAME;
     };
 
-    // --- データ管理機能 ---
     function openSettings() {
-        const list = document.getElementById('storage-list');
-        list.innerHTML = "";
-        
+        const list = document.getElementById('storage-list'); list.innerHTML = "";
         for(let i=0; i<localStorage.length; i++) {
             const key = localStorage.key(i);
             if(key.startsWith('map_db')) {
-                let size = "";
-                try {
-                    const content = JSON.parse(localStorage.getItem(key));
-                    if(Array.isArray(content)) size = `(${content.length}件)`;
-                } catch(e) {}
-
-                const div = document.createElement('div');
-                div.className = 'data-list-item';
-                div.innerHTML = `
-                    <div class="data-key">${key} <span style="font-weight:normal;font-size:0.8rem">${size}</span></div>
-                    <button class="data-del-btn" onclick="forceDelete('${key}')">削除</button>
-                `;
+                let size = ""; try { const c = JSON.parse(localStorage.getItem(key)); if(Array.isArray(c)) size = `(${c.length}件)`; } catch(e) {}
+                const div = document.createElement('div'); div.className = 'data-list-item';
+                div.innerHTML = `<div class="data-key">${key} <span style="font-weight:normal;font-size:0.8rem">${size}</span></div><button class="data-del-btn" onclick="forceDelete('${key}')">削除</button>`;
                 list.appendChild(div);
             }
         }
         if(list.innerHTML === "") list.innerHTML = "<div style='padding:10px;color:#999;text-align:center'>データはありません</div>";
         document.getElementById('settingsModal').style.display = 'flex';
     }
+    function forceDelete(key) { if(confirm(`本当に「${key}」を削除しますか？`)) { localStorage.removeItem(key); openSettings(); if(key === DB_NAME) { db = []; resetAndRender(); updateMapPins([]); } alert("削除しました"); } }
 
-    function forceDelete(key) {
-        if(confirm(`本当に「${key}」を削除しますか？\n（復元できません）`)) {
-            localStorage.removeItem(key);
-            openSettings(); 
-            if(key === DB_NAME) {
-                db = []; render(); updateMapPins([]); 
-            }
-            alert("削除しました");
-        }
-    }
-
-    async function saveKeyAndInit() {
-        const k=document.getElementById('apiKey').value; if(!k)return alert("APIキーを入れて");
-        localStorage.setItem('map_apiKey', k); await initSystem(k); alert("保存＆表示しました");
-    }
-
-    // --- Google Maps Init ---
+    async function saveKeyAndInit() { const k=document.getElementById('apiKey').value; if(!k)return alert("APIキーを入れて"); localStorage.setItem('map_apiKey', k); await initSystem(k); alert("保存しました"); }
     async function initSystem(key) {
         if(window.google && map) return;
         await new Promise((res,rej)=>{ if(document.querySelector('script[src*="maps.googleapis.com"]'))return res(); const s=document.createElement('script'); s.src=`https://maps.googleapis.com/maps/api/js?key=${key}&loading=async&libraries=places,geocoding`; s.async=true; s.onload=res; s.onerror=rej; document.head.appendChild(s); });
         try {
-            const { Map } = await google.maps.importLibrary("maps");
-            const { Geocoder } = await google.maps.importLibrary("geocoding");
-            const { Place: PlaceLib } = await google.maps.importLibrary("places");
-            const { AdvancedMarkerElement: MarkerLib } = await google.maps.importLibrary("marker");
+            const { Map } = await google.maps.importLibrary("maps"); const { Geocoder } = await google.maps.importLibrary("geocoding");
+            const { Place: PlaceLib } = await google.maps.importLibrary("places"); const { AdvancedMarkerElement: MarkerLib } = await google.maps.importLibrary("marker");
             geocoder = new Geocoder(); Place = PlaceLib; AdvancedMarkerElement = MarkerLib;
             const div = document.getElementById('map-area');
             if(!map) { map = new Map(div, { center:{lat:35.68, lng:139.76}, zoom:10, mapId: "DEMO_MAP_ID" }); infoWindow = new google.maps.InfoWindow(); }
-            if(db.length > 0) updateMapPins(db);
+            if(db.length > 0) render(); 
         } catch(e) { log("初期化エラー: "+e, "err"); }
     }
 
-    // --- 5列データ処理 ---
     async function processData() {
-        const key = document.getElementById('apiKey').value.trim();
-        const csv = document.getElementById('csvInput').value.trim();
-        const rep = document.getElementById('repName').value.trim();
-        if(!key || !csv) return alert('入力してください');
-        localStorage.setItem('map_apiKey', key);
-
-        const btn = document.getElementById('runBtn'); btn.disabled = true; btn.innerText = "処理中...";
-        document.getElementById('log-area').innerHTML = ""; 
-
+        const key = document.getElementById('apiKey').value.trim(); const csv = document.getElementById('csvInput').value.trim(); const rep = document.getElementById('repName').value.trim();
+        if(!key || !csv) return alert('入力してください'); localStorage.setItem('map_apiKey', key);
+        const btn = document.getElementById('runBtn'); btn.disabled = true; btn.innerText = "処理中..."; document.getElementById('log-area').innerHTML = ""; 
         try {
             await withTimeout(initSystem(key), 5000).catch(()=>{});
-            const lines = csv.split('\n');
-            let count = 0;
-
+            const lines = csv.split('\n'); let count = 0;
             for(let i=0; i<lines.length; i++) {
-                const line = lines[i].trim();
-                if(!line) continue;
-                
+                const line = lines[i].trim(); if(!line) continue;
                 const cols = line.split(/\t/).map(s=>s.trim());
-                // 0:Rコード 1:法人 2:店舗 3:住所 4:電話
-                let r = cols[0]||"";
-                let corp = cols[1]||"";
-                let store = cols[2]||"";
-                let addr = cols[3]||"";
-                let tel = cols[4]||"";
-
-                let fullName = (corp + " " + store).trim();
-                if(!fullName) fullName = "名称不明";
+                let r = cols[0]||"", corp = cols[1]||"", store = cols[2]||"", addr = cols[3]||"", tel = cols[4]||"";
+                let fullName = (corp + " " + store).trim(); if(!fullName) fullName = "名称不明";
                 let cleanAddr = addr.replace(/[\(（](未特定|不明|場所不明|検索エラー).*?[\)）]/g, "").trim();
-                
                 if(!cleanAddr) continue;
-
                 document.getElementById('status-log').innerText = `解析中 (${i+1}/${lines.length}): ${fullName}`;
-
-                let existIdx = -1;
-                if(r) existIdx = db.findIndex(d => d.r_code === r);
-
+                let existIdx = -1; if(r) existIdx = db.findIndex(d => d.r_code === r);
                 try {
                     const coords = await withTimeout(getCoordinates(cleanAddr), 3000);
                     const stName = await withTimeout(getStationNew(coords), 3000);
-                    const newData = { 
-                        id: Date.now().toString(36)+Math.random(), 
-                        r_code: r, name: fullName, address: addr, tel: tel,
-                        station: stName, lat: coords.lat, lng: coords.lng, 
-                        rep_name: rep, time:"", note:""
-                    };
+                    const newData = { id: Date.now().toString(36)+Math.random(), r_code: r, name: fullName, address: addr, tel: tel, station: stName, lat: coords.lat, lng: coords.lng, rep_name: rep, time:"", note:"" };
                     if(existIdx !== -1) db[existIdx] = newData; else db.push(newData);
-                    log(`OK: ${stName}`, "ok");
-                    count++;
+                    log(`OK: ${stName}`, "ok"); count++;
                 } catch(e) {
-                    const msg = e.message || e;
-                    log(`失敗: ${fullName} (${msg})`, "warn");
-                    const failData = { 
-                        id: Date.now().toString(), r_code: r, name: fullName, address: addr, tel: tel,
-                        station: `未特定`, lat: null, lng: null, rep_name: rep, time:"", note:"" 
-                    };
+                    const msg = e.message || e; log(`失敗: ${fullName} (${msg})`, "warn");
+                    const failData = { id: Date.now().toString(), r_code: r, name: fullName, address: addr, tel: tel, station: `未特定`, lat: null, lng: null, rep_name: rep, time:"", note:"" };
                     if(existIdx !== -1) db[existIdx] = failData; else db.push(failData);
                 }
                 await new Promise(r => setTimeout(r, 600));
             }
-            saveDB(); populateFilters(); render(); updateMapPins(db);
-            document.getElementById('csvInput').value = "";
-            document.getElementById('status-log').innerText = "完了";
-            alert(`${count}件 完了しました`);
+            saveDB(); populateFilters(); resetAndRender(); 
+            document.getElementById('csvInput').value = ""; document.getElementById('status-log').innerText = "完了"; alert(`${count}件 完了しました`);
         } catch(e) { alert("エラー: " + e.message); } finally { btn.disabled = false; btn.innerText = "登録＆分析スタート"; }
     }
-
-    // --- API関数 ---
     function getCoordinates(addr) { return new Promise((res, rej) => { geocoder.geocode({ address: addr }, (r, s) => { if(s==='OK'&&r[0]) res({lat:r[0].geometry.location.lat(), lng:r[0].geometry.location.lng()}); else rej(s); }); }); }
     async function getStationNew(c) { try { const {places} = await Place.searchNearby({ locationRestriction:{center:c, radius:2000}, includedPrimaryTypes:['train_station','subway_station'], maxResultCount:1, fields:['displayName']}); return (places&&places.length>0) ? places[0].displayName+(places[0].displayName.endsWith("駅")?"":"駅") : "駅なし(2km圏外)"; } catch(e){throw e;} }
     function withTimeout(p, ms) { return new Promise((res, rej) => { const t = setTimeout(()=>rej("Timeout"), ms); p.then(v=>{clearTimeout(t);res(v)}, e=>{clearTimeout(t);rej(e)}); }); }
 
-    // --- ピン・リスト表示 ---
     function updateMapPins(list) {
         if(!map || !AdvancedMarkerElement) return;
         markers.forEach(m => m.setMap(null)); markers = [];
@@ -341,20 +269,8 @@
                 const m = new AdvancedMarkerElement({ position: {lat:c.lat, lng:c.lng}, map: map, title: c.name });
                 const noteHtml = c.note ? `<div style="background:#fff9c4;padding:4px;font-size:0.8rem;margin-bottom:5px;">📝 ${c.note}</div>` : "";
                 const telHtml = c.tel ? `<div style="margin-bottom:5px;font-weight:bold;">📞 <a href="tel:${c.tel}">${c.tel}</a></div>` : "";
-                
                 m.addListener("click", () => {
-                    infoWindow.setContent(`
-                        <div class="info-window">
-                            <div class="info-title">${c.name}</div>
-                            <div style="font-size:0.8rem;margin-bottom:5px;">担当: ${c.rep_name||""} <br> R: ${c.r_code||"-"}</div>
-                            ${telHtml}
-                            <div style="font-size:0.8rem;color:#666;margin-bottom:5px;">${c.address}</div>
-                            ${noteHtml}
-                            <div style="display:flex; gap:5px; margin-top:8px;">
-                                <button onclick="openEdit('${c.id}')" style="flex:1; padding:6px; font-size:0.75rem; background:#eee; border-radius:4px; border:none;">✎ 編集</button>
-                                <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(c.address)}&travelmode=walking" target="_blank" style="flex:1; padding:6px; font-size:0.75rem; background:#34C759; color:white; border-radius:4px; text-decoration:none; text-align:center;">🚶 ルート</a>
-                            </div>
-                        </div>`);
+                    infoWindow.setContent(`<div class="info-window"><div class="info-title">${c.name}</div><div style="font-size:0.8rem;margin-bottom:5px;">担当: ${c.rep_name||""} <br> R: ${c.r_code||"-"}</div>${telHtml}<div style="font-size:0.8rem;color:#666;margin-bottom:5px;">${c.address}</div>${noteHtml}<div style="display:flex; gap:5px; margin-top:8px;"><button onclick="openEdit('${c.id}')" style="flex:1; padding:6px; font-size:0.75rem; background:#eee; border-radius:4px; border:none;">✎ 編集</button><a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(c.address)}&travelmode=walking" target="_blank" style="flex:1; padding:6px; font-size:0.75rem; background:#34C759; color:white; border-radius:4px; text-decoration:none; text-align:center;">🚶 ルート</a></div></div>`);
                     infoWindow.open(map, m);
                 });
                 markers.push(m); bounds.extend({lat:c.lat, lng:c.lng}); hasPin = true;
@@ -362,31 +278,33 @@
         });
         if(hasPin) map.fitBounds(bounds);
     }
+    function panToMap(lat, lng) { if(map && lat && lng) { map.setZoom(16); map.panTo({lat, lng}); const t = markers.find(m => Math.abs(m.position.lat-lat)<1e-5 && Math.abs(m.position.lng-lng)<1e-5); if(t) google.maps.event.trigger(t, 'click'); document.getElementById('map-area').scrollIntoView({behavior:'smooth', block:'center'}); } }
 
-    function panToMap(lat, lng) {
-        if(map && lat && lng) { map.setZoom(16); map.panTo({lat, lng}); const t = markers.find(m => Math.abs(m.position.lat-lat)<1e-5 && Math.abs(m.position.lng-lng)<1e-5); if(t) google.maps.event.trigger(t, 'click'); document.getElementById('map-area').scrollIntoView({behavior:'smooth', block:'center'}); }
-    }
-
-    // --- フィルタ & 表示 ---
     function getPrefecture(a) { if(!a)return"その他"; const m=a.match(/(...??[都道府県])/); return m?m[1]:"その他"; }
-    
     function populateFilters() {
         const pSel=document.getElementById('prefFilter'), sSel=document.getElementById('stationFilter'), rSel=document.getElementById('repFilter');
-        pSel.innerHTML='<option value="ALL">都道府県: 全て</option>'; 
-        sSel.innerHTML='<option value="ALL">最寄り駅: 全て</option>';
-        rSel.innerHTML='<option value="ALL">担当: 全員</option>';
-
+        pSel.innerHTML='<option value="ALL">都道府県: 全て</option>'; sSel.innerHTML='<option value="ALL">最寄り駅: 全て</option>'; rSel.innerHTML='<option value="ALL">担当: 全員</option>';
         [...new Set(db.map(x=>getPrefecture(x.address)))].sort((a,b)=>PREF_ORDER.indexOf(a)-PREF_ORDER.indexOf(b)).forEach(p=>{const o=document.createElement('option');o.value=p;o.innerText=p;pSel.appendChild(o)});
         [...new Set(db.map(x=>x.rep_name||""))].filter(x=>x).sort().forEach(r=>{const o=document.createElement('option');o.value=r;o.innerText=r;rSel.appendChild(o)});
-        
         updateStationFilter();
     }
-
     function updateStationFilter() {
         const p=document.getElementById('prefFilter').value, sSel=document.getElementById('stationFilter');
         sSel.innerHTML='<option value="ALL">最寄り駅: 全て</option>';
         const t = (p==="ALL") ? db : db.filter(d=>getPrefecture(d.address)===p);
         [...new Set(t.map(x=>x.station||"未特定"))].sort().forEach(s=>{const o=document.createElement('option');o.value=s;o.innerText=s;sSel.appendChild(o)});
+    }
+
+    // フィルタ変更時はリミットを100に戻す
+    function resetAndRender() {
+        currentLimit = 100;
+        render();
+    }
+
+    // 「さらに表示」ボタンを押したとき
+    function loadMore() {
+        currentLimit += 100;
+        render();
     }
 
     function render() {
@@ -396,23 +314,43 @@
         const fRep = document.getElementById('repFilter').value;
         const q = normalize(document.getElementById('searchInput').value);
 
-        const targets = db.filter(d => {
+        // 1. 全データから絞り込む (駅名検索も含む)
+        const allTargets = db.filter(d => {
             if(fPref !== "ALL" && getPrefecture(d.address) !== fPref) return false;
             if(fSt !== "ALL" && (d.station||"未特定") !== fSt) return false;
             if(fRep !== "ALL" && d.rep_name !== fRep) return false;
             if(!q) return true;
-            return normalize((d.r_code||"")+(d.name||"")+(d.address||"")+(d.note||"")+(d.rep_name||"")).includes(q);
+            return normalize((d.r_code||"")+(d.name||"")+(d.address||"")+(d.note||"")+(d.rep_name||"")+(d.station||"")).includes(q);
         });
 
-        updateMapPins(targets);
+        // 2. 集計
+        const statsArea = document.getElementById('stats-area');
+        const totalText = document.getElementById('stats-total-text');
+        const detailBox = document.getElementById('stats-detail');
 
+        if(db.length > 0) {
+            statsArea.style.display = 'block';
+            totalText.innerText = `検索ヒット: ${allTargets.length} 件`;
+            const counts = {};
+            allTargets.forEach(d => { const r = d.rep_name || "担当なし"; counts[r] = (counts[r] || 0) + 1; });
+            let html = "";
+            Object.keys(counts).sort().forEach(key => { html += `<div class="stats-item"><span>${key}</span> <span class="stats-count">${counts[key]}件</span></div>`; });
+            detailBox.innerHTML = html;
+        } else {
+            statsArea.style.display = 'none';
+        }
+
+        // 3. 表示制限 (currentLimit分だけ表示)
+        const displayTargets = allTargets.slice(0, currentLimit);
+        updateMapPins(displayTargets);
+
+        // 4. リスト描画
         const groups = {};
-        targets.forEach(d => {
+        displayTargets.forEach(d => {
             let p = getPrefecture(d.address); if(!groups[p]) groups[p] = {};
             let s = d.station || "未特定"; if(!groups[p][s]) groups[p][s] = [];
             groups[p][s].push(d);
         });
-
         const prefs = PREF_ORDER.filter(p => groups[p]).concat(Object.keys(groups).filter(p => !PREF_ORDER.includes(p)));
 
         prefs.forEach(pref => {
@@ -422,63 +360,28 @@
                 const box = document.createElement('div'); box.className = 'station-group';
                 let html = `<div class="station-header">🚉 ${st} <span style="float:right">${list.length}件</span></div>`;
                 list.forEach(c => {
-                    html += `
-                    <div class="customer-item">
-                        <div style="flex:1;">
-                            <div class="info-main">${c.name}</div>
-                            <div class="info-sub"><span class="tag">${c.r_code||"-"}</span>${c.rep_name||""}</div>
-                            ${c.tel ? `<div class="info-sub">📞 <a href="tel:${c.tel}" style="color:#007AFF;text-decoration:none;font-weight:bold;">${c.tel}</a></div>` : ""}
-                            <div class="info-sub">${c.address}</div>
-                            ${c.note ? `<div class="info-sub" style="color:#E6B800;margin-top:2px;">📝 ${c.note}</div>` : ""}
-                        </div>
-                        <div class="action-area">
-                            <a href="javascript:void(0)" onclick="openEdit('${c.id}')" class="icon-btn" title="編集">✎</a>
-                            <a href="javascript:void(0)" onclick="panToMap(${c.lat}, ${c.lng})" class="icon-btn map" title="地図">📍</a>
-                            <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(c.address)}&travelmode=walking" target="_blank" class="icon-btn call" title="ルート">🚶</a>
-                        </div>
-                    </div>`;
+                    html += `<div class="customer-item"><div style="flex:1;"><div class="info-main">${c.name}</div><div class="info-sub"><span class="tag">${c.r_code||"-"}</span>${c.rep_name||""}</div>${c.tel ? `<div class="info-sub">📞 <a href="tel:${c.tel}" style="color:#007AFF;text-decoration:none;font-weight:bold;">${c.tel}</a></div>` : ""}<div class="info-sub">${c.address}</div>${c.note ? `<div class="info-sub" style="color:#E6B800;margin-top:2px;">📝 ${c.note}</div>` : ""}</div><div class="action-area"><a href="javascript:void(0)" onclick="openEdit('${c.id}')" class="icon-btn" title="編集">✎</a><a href="javascript:void(0)" onclick="panToMap(${c.lat}, ${c.lng})" class="icon-btn map" title="地図">📍</a><a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(c.address)}&travelmode=walking" target="_blank" class="icon-btn call" title="ルート">🚶</a></div></div>`;
                 });
                 box.innerHTML = html; area.appendChild(box);
             });
         });
-    }
-
-    // --- 編集・保存 ---
-    function openEdit(id) {
-        const d = db.find(x => x.id === id); if(!d) return;
-        document.getElementById('edit-id').value = d.id;
-        document.getElementById('orig-addr').value = d.address;
-        document.getElementById('edit-rep').value = d.rep_name||"";
-        document.getElementById('edit-r').value = d.r_code||"";
-        document.getElementById('edit-name').value = d.name;
-        document.getElementById('edit-tel').value = d.tel||"";
-        document.getElementById('edit-addr').value = d.address;
-        document.getElementById('edit-note').value = d.note||"";
-        document.getElementById('editModal').style.display='flex';
-    }
-    function closeModal() { document.getElementById('editModal').style.display='none'; }
-
-    async function saveEdit() {
-        const id = document.getElementById('edit-id').value;
-        const idx = db.findIndex(x => x.id === id);
-        const newAddr = document.getElementById('edit-addr').value.trim();
-        db[idx].rep_name = document.getElementById('edit-rep').value;
-        db[idx].r_code = document.getElementById('edit-r').value;
-        db[idx].name = document.getElementById('edit-name').value;
-        db[idx].tel = document.getElementById('edit-tel').value;
-        db[idx].address = newAddr;
-        db[idx].note = document.getElementById('edit-note').value;
-
-        if(newAddr !== document.getElementById('orig-addr').value) {
-            try { const c = await getCoordinates(newAddr); const s = await getStationNew(c); db[idx].lat = c.lat; db[idx].lng = c.lng; db[idx].station = s; alert("場所を更新しました"); } 
-            catch(e) { alert("住所解析失敗"); }
+        
+        // 5. ボタンの表示制御
+        const btnArea = document.getElementById('load-more-area');
+        if(allTargets.length > currentLimit) {
+            btnArea.style.display = 'block';
+            btnArea.querySelector('button').innerText = `👇 さらに100件表示 (残り ${allTargets.length - currentLimit} 件)`;
+        } else {
+            btnArea.style.display = 'none';
         }
-        saveDB(); populateFilters(); render(); updateMapPins(db); closeModal();
     }
-    function deleteCustomer() { if(confirm("削除しますか？")) { db = db.filter(x => x.id !== document.getElementById('edit-id').value); saveDB(); render(); updateMapPins(db); closeModal(); } }
 
+    function openEdit(id) { const d = db.find(x => x.id === id); if(!d) return; document.getElementById('edit-id').value = d.id; document.getElementById('orig-addr').value = d.address; document.getElementById('edit-rep').value = d.rep_name||""; document.getElementById('edit-r').value = d.r_code||""; document.getElementById('edit-name').value = d.name; document.getElementById('edit-tel').value = d.tel||""; document.getElementById('edit-addr').value = d.address; document.getElementById('edit-note').value = d.note||""; document.getElementById('editModal').style.display='flex'; }
+    function closeModal() { document.getElementById('editModal').style.display='none'; }
+    async function saveEdit() { const id = document.getElementById('edit-id').value; const idx = db.findIndex(x => x.id === id); const newAddr = document.getElementById('edit-addr').value.trim(); db[idx].rep_name = document.getElementById('edit-rep').value; db[idx].r_code = document.getElementById('edit-r').value; db[idx].name = document.getElementById('edit-name').value; db[idx].tel = document.getElementById('edit-tel').value; db[idx].address = newAddr; db[idx].note = document.getElementById('edit-note').value; if(newAddr !== document.getElementById('orig-addr').value) { try { const c = await getCoordinates(newAddr); const s = await getStationNew(c); db[idx].lat = c.lat; db[idx].lng = c.lng; db[idx].station = s; alert("場所を更新しました"); } catch(e) { alert("住所解析失敗"); } } saveDB(); render(); closeModal(); }
+    function deleteCustomer() { if(confirm("削除しますか？")) { db = db.filter(x => x.id !== document.getElementById('edit-id').value); saveDB(); render(); closeModal(); } }
     function downloadData() { if(db.length==0)return alert("なし"); const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(db)],{type:"application/json"})); a.download=`map_db_${new Date().toISOString().slice(0,10)}.json`; a.click(); }
-    function uploadData(i) { const f=i.files[0]; if(!f)return; const r=new FileReader(); r.onload=e=>{try{if(confirm("読込しますか？")){db=JSON.parse(e.target.result);saveDB();populateFilters();render();updateMapPins(db);alert("完了");}}catch(z){alert("失敗");}}; r.readAsText(f); }
+    function uploadData(i) { const f=i.files[0]; if(!f)return; const r=new FileReader(); r.onload=e=>{try{if(confirm("読込しますか？")){db=JSON.parse(e.target.result);saveDB();populateFilters();resetAndRender();alert("完了");}}catch(z){alert("失敗");}}; r.readAsText(f); }
     function saveDB() { localStorage.setItem(DB_NAME, JSON.stringify(db)); }
     function clearAll() { if(confirm("本当に全削除しますか？")) { localStorage.removeItem(DB_NAME); location.reload(); } }
 </script>
