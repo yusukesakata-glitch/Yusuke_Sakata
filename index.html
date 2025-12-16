@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>顧客マップDB Pro</title>
+    <title>顧客マップDB Pro (高速・整列版)</title>
     <style>
         :root { --primary: #007AFF; --bg: #F2F2F7; --card: #FFFFFF; --text: #1C1C1E; --gray: #8E8E93; --radius: 12px; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 15px; -webkit-font-smoothing: antialiased; padding-bottom: 100px; }
@@ -28,14 +28,24 @@
         .search-box input { width: 100%; padding: 12px 12px 12px 40px; border-radius: 12px; border: 2px solid var(--primary); background: #fff; font-size: 16px; box-sizing: border-box; }
         .search-icon { position: absolute; left: 12px; top: 12px; font-size: 1.2rem; color: var(--primary); }
 
-        /* 集計エリア */
+        /* 集計 & カウンター (クリック可能に装飾) */
         #stats-area { background: #fff; border-radius: 12px; padding: 15px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: none; }
-        .stats-total { font-size: 1.1rem; font-weight: 800; color: #333; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .stats-total { font-size: 1.1rem; font-weight: 800; color: #333; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 5px; display:flex; justify-content:space-between; align-items:center;}
+        .display-count { font-size: 0.8rem; color: #fff; background: var(--primary); padding: 2px 8px; border-radius: 10px; margin-left: 10px;}
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
-        .stats-item { font-size: 0.85rem; color: #555; display: flex; justify-content: space-between; background: #f9f9f9; padding: 6px 10px; border-radius: 6px; }
+        
+        /* クリックできる感 */
+        .stats-item { 
+            font-size: 0.85rem; color: #555; display: flex; justify-content: space-between; 
+            background: #f9f9f9; padding: 8px 12px; border-radius: 6px; 
+            cursor: pointer; transition: all 0.2s; border: 1px solid transparent;
+        }
+        .stats-item:hover { background: #e3f2fd; border-color: var(--primary); transform: translateY(-2px); }
+        .stats-item:active { transform: translateY(0); background: #d1e9fc; }
+        
         .stats-count { font-weight: bold; color: var(--primary); }
 
-        /* メニューカード */
+        /* メニュー */
         .card { background: var(--card); padding: 15px; border-radius: var(--radius); box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
         h3 { margin: 0; font-size: 1rem; color: var(--primary); cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
         
@@ -43,7 +53,6 @@
         input[type="text"], input[type="password"], textarea { width: 100%; padding: 10px; border: 1px solid #E5E5EA; background: #FAFAFA; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
         textarea { height: 80px; font-family: monospace; white-space: pre; overflow-x: scroll; }
 
-        /* ボタン */
         button { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; font-size: 15px; transition: opacity 0.2s; margin-top: 10px; }
         button:active { opacity: 0.7; }
         .btn-main { background: var(--primary); color: white; }
@@ -52,11 +61,10 @@
         .btn-key { background: #34C759; color: white; width: auto; padding: 8px 15px; font-size: 0.85rem; margin-top: 0; margin-left: 5px; }
         .data-tools { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px; }
 
-        /* 「さらに表示」ボタン */
-        .btn-load-more { background: #fff; color: var(--primary); border: 2px solid var(--primary); margin-top: 20px; font-size: 1rem; }
+        .btn-load-more { background: #fff; color: var(--primary); border: 2px solid var(--primary); margin-top: 20px; font-size: 1rem; padding: 15px; }
         .btn-load-more:active { background: #f0f8ff; }
 
-        /* リスト表示 */
+        /* リスト */
         .station-group { background: var(--card); border-radius: 12px; overflow: hidden; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
         .station-header { background: rgba(0,122,255,0.08); padding: 10px 15px; color: var(--primary); font-weight: bold; font-size: 0.95rem; }
         .customer-item { padding: 12px 15px; border-bottom: 1px solid #f5f5f5; display: flex; justify-content: space-between; align-items: flex-start; }
@@ -69,7 +77,6 @@
         .icon-btn.call { color: #34C759; }
         .icon-btn.map { color: var(--primary); }
 
-        /* ログ・モーダル等 */
         #log-area { display:none; background:#222; color:#fff; padding:10px; border-radius:8px; height:80px; overflow-y:scroll; font-family:monospace; font-size:0.75rem; margin-bottom:15px; }
         .log-ok { color:#34C759; } .log-warn { color:#FFD60A; } .log-err { color:#FF3B30; }
         #status-log { text-align: center; color: var(--gray); font-size: 0.85rem; margin: 5px 0; height: 1.2em; }
@@ -105,7 +112,10 @@
     </div>
 
     <div id="stats-area">
-        <div class="stats-total" id="stats-total-text"></div>
+        <div class="stats-total">
+            <span id="stats-total-text"></span>
+            <span class="display-count" id="display-count-text"></span>
+        </div>
         <div class="stats-grid" id="stats-detail"></div>
     </div>
 
@@ -130,6 +140,7 @@
     </div>
 
     <div id="log-area"></div><div id="status-log"></div><div id="result-area"></div>
+    
     <div id="load-more-area" style="text-align:center; display:none;">
         <button class="btn-load-more" onclick="loadMore()">👇 さらに100件表示</button>
     </div>
@@ -171,9 +182,7 @@
     const DB_NAME = "map_db"; 
     // ★★★★★★★★★★★★★★★★★★★★★★★
     
-    // 現在の表示件数リミット
-    let currentLimit = 100;
-
+    let currentLimit = 100; // 初期表示件数
     let db = [];
     let map, geocoder, Place, AdvancedMarkerElement;
     let markers = [];
@@ -295,16 +304,21 @@
         [...new Set(t.map(x=>x.station||"未特定"))].sort().forEach(s=>{const o=document.createElement('option');o.value=s;o.innerText=s;sSel.appendChild(o)});
     }
 
-    // フィルタ変更時はリミットを100に戻す
     function resetAndRender() {
         currentLimit = 100;
         render();
     }
 
-    // 「さらに表示」ボタンを押したとき
     function loadMore() {
-        currentLimit += 100;
+        currentLimit = Number(currentLimit) + 100;
         render();
+    }
+
+    // ★ クリックで絞り込む新機能
+    function setRepFilter(name) {
+        document.getElementById('repFilter').value = name;
+        resetAndRender();
+        document.getElementById('stats-area').scrollIntoView({behavior:'smooth', block:'start'});
     }
 
     function render() {
@@ -314,7 +328,7 @@
         const fRep = document.getElementById('repFilter').value;
         const q = normalize(document.getElementById('searchInput').value);
 
-        // 1. 全データから絞り込む (駅名検索も含む)
+        // 1. 全データから絞り込み
         const allTargets = db.filter(d => {
             if(fPref !== "ALL" && getPrefecture(d.address) !== fPref) return false;
             if(fSt !== "ALL" && (d.station||"未特定") !== fSt) return false;
@@ -323,24 +337,39 @@
             return normalize((d.r_code||"")+(d.name||"")+(d.address||"")+(d.note||"")+(d.rep_name||"")+(d.station||"")).includes(q);
         });
 
+        // ★ 自動並び替え (担当者名 > ID順)
+        allTargets.sort((a, b) => {
+            const nA = a.rep_name || "";
+            const nB = b.rep_name || "";
+            return nA.localeCompare(nB, 'ja');
+        });
+
         // 2. 集計
         const statsArea = document.getElementById('stats-area');
         const totalText = document.getElementById('stats-total-text');
+        const countText = document.getElementById('display-count-text');
         const detailBox = document.getElementById('stats-detail');
 
         if(db.length > 0) {
             statsArea.style.display = 'block';
-            totalText.innerText = `検索ヒット: ${allTargets.length} 件`;
+            totalText.innerText = `全ヒット: ${allTargets.length} 件`;
+            
+            const showing = Math.min(allTargets.length, currentLimit);
+            countText.innerText = `表示中: ${showing} / ${allTargets.length} 件`;
+
             const counts = {};
             allTargets.forEach(d => { const r = d.rep_name || "担当なし"; counts[r] = (counts[r] || 0) + 1; });
             let html = "";
-            Object.keys(counts).sort().forEach(key => { html += `<div class="stats-item"><span>${key}</span> <span class="stats-count">${counts[key]}件</span></div>`; });
+            // ここでクリックイベントを追加
+            Object.keys(counts).sort().forEach(key => { 
+                html += `<div class="stats-item" onclick="setRepFilter('${key}')"><span>${key}</span> <span class="stats-count">${counts[key]}件</span></div>`; 
+            });
             detailBox.innerHTML = html;
         } else {
             statsArea.style.display = 'none';
         }
 
-        // 3. 表示制限 (currentLimit分だけ表示)
+        // 3. 表示制限
         const displayTargets = allTargets.slice(0, currentLimit);
         updateMapPins(displayTargets);
 
@@ -366,7 +395,6 @@
             });
         });
         
-        // 5. ボタンの表示制御
         const btnArea = document.getElementById('load-more-area');
         if(allTargets.length > currentLimit) {
             btnArea.style.display = 'block';
