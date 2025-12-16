@@ -12,7 +12,7 @@
         /* ヘッダー */
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         h1 { font-size: 1.3rem; font-weight: 800; margin: 0; }
-        .btn-settings { background: #E5E5EA; color: #333; border: 1px solid #ccc; padding: 8px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.85rem; }
+        .btn-settings { background: #fff; color: #333; border: 2px solid #ddd; padding: 8px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.85rem; }
 
         /* マップ */
         #map-area { height: 450px; background: #ddd; border-radius: var(--radius); margin-bottom: 15px; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
@@ -90,9 +90,15 @@
         .data-key { font-weight: bold; font-size: 0.9rem; }
         .data-del-btn { background: #FF3B30; color: white; border: none; padding: 5px 10px; border-radius: 5px; font-size: 0.75rem; cursor: pointer; margin-top:0;}
         
-        /* 設定ブロック */
-        .config-block { background:#f0f8ff; padding:12px; border-radius:8px; margin-bottom:15px; border:1px solid #d1e9fc; }
-        .config-title { font-weight:bold; color:var(--primary); font-size:0.9rem; margin-bottom:5px; display:block; }
+        /* 設定モーダル内のスタイル */
+        .settings-section { margin-bottom: 20px; border: 1px solid #eee; padding: 10px; border-radius: 8px; }
+        .settings-section h4 { margin: 0 0 10px 0; color: var(--primary); font-size: 0.95rem; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        
+        .rep-checklist { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; max-height: 200px; overflow-y: auto; }
+        .rep-check-item { display: flex; align-items: center; padding: 5px; background: #fafafa; border-radius: 4px; font-size: 0.85rem; }
+        .rep-check-item input { width: auto; margin-right: 8px; transform: scale(1.2); }
+        .rep-check-item label { margin: 0; width: 100%; cursor: pointer; color: #333; }
+        .rep-check-item:hover { background: #f0f8ff; }
     </style>
 </head>
 <body>
@@ -136,22 +142,13 @@
     <div class="card">
         <h3 onclick="toggleInput()"><span>＋ 登録・データ移行メニュー</span> <span>▼</span></h3>
         <div id="input-area" style="display:none; margin-top:15px;">
-            <div style="display:flex; align-items:center; margin-bottom:15px;">
+            <div style="display:flex; align-items:center; margin-bottom:10px;">
                 <input type="password" id="apiKey" placeholder="API Key (New API)" style="margin-bottom:0; flex-grow:1;">
                 <button class="btn-key" onclick="saveKeyAndInit()">キー保存</button>
             </div>
             
-            <div class="config-block">
-                <label class="config-title">🔵 青ピンにする担当者 (表示設定)</label>
-                <div style="font-size:0.75rem; color:#666; margin-bottom:5px;">※自分の名前やチームメンバーを入力（改行で複数可）</div>
-                <textarea id="targetRepsInput" placeholder="坂田 悠介
-田中 太郎" style="height:60px;" onchange="saveTargetReps()"></textarea>
-            </div>
-            
-            <div style="border-top:2px solid #eee; padding-top:15px;">
-                <label class="config-title">📝 新規データの登録</label>
-                
-                <label>登録するデータの担当者名</label>
+            <div style="border-top:1px solid #eee; margin-top:10px; padding-top:10px;">
+                <label>📝 新規登録データの担当者名</label>
                 <input type="text" id="repName" placeholder="例: 佐藤">
 
                 <label>リスト貼り付け (5列: Rコード|法人名|店舗名|住所|電話)</label>
@@ -197,12 +194,23 @@
 <div id="settingsModal" class="modal-overlay">
     <div class="modal-content">
         <h3 style="text-align:center; margin-top:0;">設定・データ管理</h3>
-        <div style="background:#F2F2F7; padding:10px; border-radius:8px; margin-bottom:15px;">
-            <div style="font-size:0.8rem; font-weight:bold; color:#666; margin-bottom:5px;">現在使用中のDB名</div>
-            <div style="font-weight:bold; font-family:monospace;" id="current-db-name"></div>
+        
+        <div class="settings-section">
+            <h4>📍 青ピンにする担当者 (選択)</h4>
+            <div style="font-size:0.75rem; color:#666; margin-bottom:5px;">※チェックを入れた担当者が地図上で青くなります</div>
+            <div id="rep-checklist" class="rep-checklist">
+                </div>
         </div>
-        <div style="margin-bottom:10px; font-weight:bold;">保存されている全データ一覧</div>
-        <div id="storage-list" style="max-height:200px; overflow-y:auto; border:1px solid #eee; border-radius:8px; margin-bottom:15px;"></div>
+
+        <div class="settings-section">
+            <h4>💾 保存データ管理</h4>
+            <div style="background:#F2F2F7; padding:10px; border-radius:8px; margin-bottom:10px;">
+                <div style="font-size:0.8rem; font-weight:bold; color:#666;">使用中のDB名</div>
+                <div style="font-weight:bold; font-family:monospace;" id="current-db-name"></div>
+            </div>
+            <div id="storage-list" style="max-height:150px; overflow-y:auto; border:1px solid #eee; border-radius:8px;"></div>
+        </div>
+
         <button class="btn-sub" onclick="document.getElementById('settingsModal').style.display='none'">閉じる</button>
     </div>
 </div>
@@ -231,12 +239,9 @@
         const k = localStorage.getItem('map_apiKey');
         const d = localStorage.getItem(DB_NAME);
         
-        // 青ピンリストの読み込み
-        const tr = localStorage.getItem('map_target_reps');
-        if(tr) {
-            document.getElementById('targetRepsInput').value = tr;
-            parseTargetReps(tr);
-        }
+        // 青ピンリストの読み込み (JSONで保存に変更)
+        const tr = localStorage.getItem('map_target_reps_json');
+        if(tr) { try { targetReps = JSON.parse(tr); } catch(e) { targetReps=[]; } }
 
         if(k) document.getElementById('apiKey').value = k;
         if(d) { try { db = JSON.parse(d); populateFilters(); resetAndRender(); } catch(e){ db=[]; } }
@@ -244,31 +249,57 @@
         document.getElementById('current-db-name').innerText = DB_NAME;
     };
 
-    function saveTargetReps() {
-        const val = document.getElementById('targetRepsInput').value;
-        localStorage.setItem('map_target_reps', val);
-        parseTargetReps(val);
-        render(); // 再描画してピンの色を更新
-    }
-
-    function parseTargetReps(text) {
-        targetReps = text.split(/\n/).map(s => s.trim()).filter(s => s);
-    }
-
+    // ★ 設定画面の処理（担当者選択対応）
     function openSettings() {
-        const list = document.getElementById('storage-list'); list.innerHTML = "";
+        const modal = document.getElementById('settingsModal');
+        
+        // 1. 担当者チェックリスト生成
+        const repList = document.getElementById('rep-checklist');
+        repList.innerHTML = "";
+        
+        // DBから担当者一覧を取得してソート
+        const allReps = [...new Set(db.map(d => d.rep_name || "担当なし"))].sort();
+        
+        if(allReps.length === 0) {
+            repList.innerHTML = "<div style='padding:5px; color:#888;'>データがありません</div>";
+        } else {
+            allReps.forEach(name => {
+                const div = document.createElement('div');
+                div.className = 'rep-check-item';
+                const isChecked = targetReps.includes(name) ? "checked" : "";
+                // 変更時に即保存＆再描画
+                div.innerHTML = `<label><input type="checkbox" value="${name}" ${isChecked} onchange="toggleTargetRep(this)"> ${name}</label>`;
+                repList.appendChild(div);
+            });
+        }
+
+        // 2. データ保存管理リスト生成
+        const storageList = document.getElementById('storage-list'); storageList.innerHTML = "";
         for(let i=0; i<localStorage.length; i++) {
             const key = localStorage.key(i);
             if(key.startsWith('map_db')) {
                 let size = ""; try { const c = JSON.parse(localStorage.getItem(key)); if(Array.isArray(c)) size = `(${c.length}件)`; } catch(e) {}
                 const div = document.createElement('div'); div.className = 'data-list-item';
                 div.innerHTML = `<div class="data-key">${key} <span style="font-weight:normal;font-size:0.8rem">${size}</span></div><button class="data-del-btn" onclick="forceDelete('${key}')">削除</button>`;
-                list.appendChild(div);
+                storageList.appendChild(div);
             }
         }
-        if(list.innerHTML === "") list.innerHTML = "<div style='padding:10px;color:#999;text-align:center'>データはありません</div>";
-        document.getElementById('settingsModal').style.display = 'flex';
+        
+        modal.style.display = 'flex';
     }
+
+    // ★ 青ピン担当者の切り替え処理
+    function toggleTargetRep(checkbox) {
+        const name = checkbox.value;
+        if(checkbox.checked) {
+            if(!targetReps.includes(name)) targetReps.push(name);
+        } else {
+            targetReps = targetReps.filter(n => n !== name);
+        }
+        localStorage.setItem('map_target_reps_json', JSON.stringify(targetReps));
+        render(); // 即座に地図に反映
+    }
+
     function forceDelete(key) { if(confirm(`本当に「${key}」を削除しますか？`)) { localStorage.removeItem(key); openSettings(); if(key === DB_NAME) { db = []; resetAndRender(); updateMapPins([]); } alert("削除しました"); } }
 
     async function saveKeyAndInit() { const k=document.getElementById('apiKey').value; if(!k)return alert("APIキーを入れて"); localStorage.setItem('map_apiKey', k); await initSystem(k); alert("保存しました"); }
@@ -291,8 +322,6 @@
 
     async function processData() {
         const key = document.getElementById('apiKey').value.trim(); const csv = document.getElementById('csvInput').value.trim(); 
-        
-        // ★新規登録用の担当者名 (inputタグから取得)
         const newRepName = document.getElementById('repName').value.trim();
 
         if(!key || !csv) return alert('入力してください'); localStorage.setItem('map_apiKey', key);
