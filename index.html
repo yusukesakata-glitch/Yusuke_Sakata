@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>顧客マップDB Pro (運用版)</title>
+    <title>顧客マップDB Pro (共有版)</title>
     <style>
         :root { --primary: #007AFF; --bg: #F2F2F7; --card: #FFFFFF; --text: #1C1C1E; --gray: #8E8E93; --radius: 12px; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 15px; -webkit-font-smoothing: antialiased; padding-bottom: 100px; }
@@ -90,7 +90,6 @@
         .data-key { font-weight: bold; font-size: 0.9rem; }
         .data-del-btn { background: #FF3B30; color: white; border: none; padding: 5px 10px; border-radius: 5px; font-size: 0.75rem; cursor: pointer; margin-top:0;}
         
-        /* 設定モーダル内のスタイル */
         .settings-section { margin-bottom: 20px; border: 1px solid #eee; padding: 10px; border-radius: 8px; }
         .settings-section h4 { margin: 0 0 10px 0; color: var(--primary); font-size: 0.95rem; border-bottom: 1px solid #eee; padding-bottom: 5px; }
         
@@ -158,9 +157,9 @@
             </div>
 
             <div class="data-tools">
-                <button class="btn-sub" onclick="downloadData()">💾 PCで保存</button>
+                <button class="btn-sub" onclick="shareOrDownload()">💾 データ保存 (共有/ダウンロード)</button>
                 <button class="btn-sub" onclick="document.getElementById('fileInput').click()">📂 スマホで読込</button>
-                <input type="file" id="fileInput" style="display:none" onchange="uploadData(this)">
+                <input type="file" id="fileInput" accept=".json" style="display:none" onchange="uploadData(this)">
             </div>
             <button class="btn-danger" onclick="clearAll()">このDBを全削除</button>
         </div>
@@ -198,8 +197,7 @@
         <div class="settings-section">
             <h4>📍 青ピンにする担当者 (選択)</h4>
             <div style="font-size:0.75rem; color:#666; margin-bottom:5px;">※チェックを入れた担当者が地図上で青くなります</div>
-            <div id="rep-checklist" class="rep-checklist">
-                </div>
+            <div id="rep-checklist" class="rep-checklist"></div>
         </div>
 
         <div class="settings-section">
@@ -216,14 +214,12 @@
 </div>
 
 <script>
-    // ★★★ 別の人用にするときはここを変える ★★★
     const DB_NAME = "map_db"; 
-    // ★★★★★★★★★★★★★★★★★★★★★★★
     
     let currentLimit = 100;
     let activeReps = new Set();
     let mapSyncMode = false;
-    let targetReps = []; // 青ピンにする人のリスト
+    let targetReps = []; 
     
     let db = [];
     let map, geocoder, Place, AdvancedMarkerElement;
@@ -239,7 +235,6 @@
         const k = localStorage.getItem('map_apiKey');
         const d = localStorage.getItem(DB_NAME);
         
-        // 青ピンリストの読み込み (JSONで保存に変更)
         const tr = localStorage.getItem('map_target_reps_json');
         if(tr) { try { targetReps = JSON.parse(tr); } catch(e) { targetReps=[]; } }
 
@@ -249,15 +244,10 @@
         document.getElementById('current-db-name').innerText = DB_NAME;
     };
 
-    // ★ 設定画面の処理（担当者選択対応）
     function openSettings() {
         const modal = document.getElementById('settingsModal');
-        
-        // 1. 担当者チェックリスト生成
         const repList = document.getElementById('rep-checklist');
         repList.innerHTML = "";
-        
-        // DBから担当者一覧を取得してソート
         const allReps = [...new Set(db.map(d => d.rep_name || "担当なし"))].sort();
         
         if(allReps.length === 0) {
@@ -267,13 +257,11 @@
                 const div = document.createElement('div');
                 div.className = 'rep-check-item';
                 const isChecked = targetReps.includes(name) ? "checked" : "";
-                // 変更時に即保存＆再描画
                 div.innerHTML = `<label><input type="checkbox" value="${name}" ${isChecked} onchange="toggleTargetRep(this)"> ${name}</label>`;
                 repList.appendChild(div);
             });
         }
 
-        // 2. データ保存管理リスト生成
         const storageList = document.getElementById('storage-list'); storageList.innerHTML = "";
         for(let i=0; i<localStorage.length; i++) {
             const key = localStorage.key(i);
@@ -284,20 +272,15 @@
                 storageList.appendChild(div);
             }
         }
-        
         modal.style.display = 'flex';
     }
 
-    // ★ 青ピン担当者の切り替え処理
     function toggleTargetRep(checkbox) {
         const name = checkbox.value;
-        if(checkbox.checked) {
-            if(!targetReps.includes(name)) targetReps.push(name);
-        } else {
-            targetReps = targetReps.filter(n => n !== name);
-        }
+        if(checkbox.checked) { if(!targetReps.includes(name)) targetReps.push(name); } 
+        else { targetReps = targetReps.filter(n => n !== name); }
         localStorage.setItem('map_target_reps_json', JSON.stringify(targetReps));
-        render(); // 即座に地図に反映
+        render(); 
     }
 
     function forceDelete(key) { if(confirm(`本当に「${key}」を削除しますか？`)) { localStorage.removeItem(key); openSettings(); if(key === DB_NAME) { db = []; resetAndRender(); updateMapPins([]); } alert("削除しました"); } }
@@ -366,20 +349,16 @@
         
         list.forEach(c => {
             if(c.lat && c.lng) {
-                // ★青ピンリストに含まれているかチェック
                 const isMe = targetReps.includes(c.rep_name);
                 const color = isMe ? "#007AFF" : "#FF3B30";
-                
                 const pinView = document.createElement("div");
                 pinView.style.backgroundColor = color;
                 pinView.style.width = "14px"; pinView.style.height = "14px";
                 pinView.style.borderRadius = "50%";
                 pinView.style.border = "2px solid white";
                 pinView.style.boxShadow = "0 2px 4px rgba(0,0,0,0.3)";
-
                 const m = new AdvancedMarkerElement({ position: {lat:c.lat, lng:c.lng}, map: map, title: c.name, content: pinView });
                 m.zIndex = isMe ? 100 : 1;
-
                 const noteHtml = c.note ? `<div style="background:#fff9c4;padding:4px;font-size:0.8rem;margin-bottom:5px;">📝 ${c.note}</div>` : "";
                 const telHtml = c.tel ? `<div style="margin-bottom:5px;font-weight:bold;">📞 <a href="tel:${c.tel}">${c.tel}</a></div>` : "";
                 m.addListener("click", () => {
@@ -501,11 +480,42 @@
         }
     }
 
+    // ★ Android共有対応の保存処理
+    async function shareOrDownload() {
+        if(db.length == 0) return alert("データがありません");
+        
+        // ファイルを作成
+        const json = JSON.stringify(db);
+        const fileName = `map_db_${new Date().toISOString().slice(0,10)}.json`;
+        const file = new File([json], fileName, { type: "application/json" });
+
+        // 1. まず共有APIを試す (スマホ向け)
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+                await navigator.share({
+                    files: [file],
+                    title: '顧客マップDB バックアップ',
+                    text: '顧客データのバックアップファイルです。'
+                });
+                return; // 共有できたらここで終了
+            } catch (error) {
+                // キャンセルされた場合などは何もしない、またはフォールバックへ
+                console.log("Share failed or cancelled", error);
+            }
+        }
+
+        // 2. 共有が使えない/失敗した場合は、従来のダウンロード (PC向け)
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([json], {type:"application/json"}));
+        a.download = fileName;
+        a.click();
+    }
+
     function openEdit(id) { const d = db.find(x => x.id === id); if(!d) return; document.getElementById('edit-id').value = d.id; document.getElementById('orig-addr').value = d.address; document.getElementById('edit-rep').value = d.rep_name||""; document.getElementById('edit-r').value = d.r_code||""; document.getElementById('edit-name').value = d.name; document.getElementById('edit-tel').value = d.tel||""; document.getElementById('edit-addr').value = d.address; document.getElementById('edit-note').value = d.note||""; document.getElementById('editModal').style.display='flex'; }
     function closeModal() { document.getElementById('editModal').style.display='none'; }
     async function saveEdit() { const id = document.getElementById('edit-id').value; const idx = db.findIndex(x => x.id === id); const newAddr = document.getElementById('edit-addr').value.trim(); db[idx].rep_name = document.getElementById('edit-rep').value; db[idx].r_code = document.getElementById('edit-r').value; db[idx].name = document.getElementById('edit-name').value; db[idx].tel = document.getElementById('edit-tel').value; db[idx].address = newAddr; db[idx].note = document.getElementById('edit-note').value; if(newAddr !== document.getElementById('orig-addr').value) { try { const c = await getCoordinates(newAddr); const s = await getStationNew(c); db[idx].lat = c.lat; db[idx].lng = c.lng; db[idx].station = s; alert("場所を更新しました"); } catch(e) { alert("住所解析失敗"); } } saveDB(); render(); closeModal(); }
     function deleteCustomer() { if(confirm("削除しますか？")) { db = db.filter(x => x.id !== document.getElementById('edit-id').value); saveDB(); render(); closeModal(); } }
-    function downloadData() { if(db.length==0)return alert("なし"); const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(db)],{type:"application/json"})); a.download=`map_db_${new Date().toISOString().slice(0,10)}.json`; a.click(); }
+    function downloadData() { shareOrDownload(); } // 古い関数名を新しい処理へ誘導
     function uploadData(i) { const f=i.files[0]; if(!f)return; const r=new FileReader(); r.onload=e=>{try{if(confirm("読込しますか？")){db=JSON.parse(e.target.result);saveDB();populateFilters();resetAndRender();alert("完了");}}catch(z){alert("失敗");}}; r.readAsText(f); }
     function saveDB() { localStorage.setItem(DB_NAME, JSON.stringify(db)); }
     function clearAll() { if(confirm("本当に全削除しますか？")) { localStorage.removeItem(DB_NAME); location.reload(); } }
