@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>顧客マップDB Pro (運用版)</title>
+    <title>顧客マップDB Pro (完成版)</title>
     <style>
         :root { --primary: #007AFF; --bg: #F2F2F7; --card: #FFFFFF; --text: #1C1C1E; --gray: #8E8E93; --radius: 12px; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 15px; -webkit-font-smoothing: antialiased; padding-bottom: 100px; }
@@ -13,6 +13,12 @@
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         h1 { font-size: 1.3rem; font-weight: 800; margin: 0; }
         .btn-settings { background: #fff; color: #333; border: 2px solid #ddd; padding: 8px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.85rem; }
+
+        /* ★新設：地名ジャンプエリア */
+        .jump-area { display: flex; gap: 8px; margin-bottom: 10px; }
+        .jump-input { flex: 1; padding: 10px; border-radius: 8px; border: 2px solid #ddd; font-size: 16px; box-sizing: border-box; }
+        .btn-jump { background: #333; color: #fff; border: none; padding: 0 20px; border-radius: 8px; font-weight: bold; cursor: pointer; white-space: nowrap; }
+        .btn-jump:active { opacity: 0.7; }
 
         /* マップ */
         #map-area { height: 450px; background: #ddd; border-radius: var(--radius); margin-bottom: 15px; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
@@ -106,6 +112,11 @@
     <div class="header">
         <h1>顧客DB Pro</h1>
         <button class="btn-settings" onclick="openSettings()">⚙️ 設定・管理</button>
+    </div>
+
+    <div class="jump-area">
+        <input type="text" id="mapJumpInput" class="jump-input" placeholder="📍 地名で地図移動 (例: 銀座, 大阪駅)">
+        <button class="btn-jump" onclick="searchMapLocation()">移動</button>
     </div>
 
     <div id="map-area">
@@ -303,6 +314,23 @@
         } catch(e) { log("初期化エラー: "+e, "err"); }
     }
 
+    // ★ 新機能：地名ジャンプ
+    function searchMapLocation() {
+        const input = document.getElementById('mapJumpInput').value;
+        if(!input) return;
+        if(!geocoder || !map) return alert("地図の準備がまだです");
+        
+        geocoder.geocode({ address: input }, (results, status) => {
+            if (status === 'OK') {
+                map.setCenter(results[0].geometry.location);
+                map.setZoom(14); // ほどよいズームへ
+                if(mapSyncMode) resetAndRender(); // 連動モードならリストも更新
+            } else {
+                alert('見つかりませんでした: ' + status);
+            }
+        });
+    }
+
     async function processData() {
         const key = document.getElementById('apiKey').value.trim(); const csv = document.getElementById('csvInput').value.trim(); 
         const newRepName = document.getElementById('repName').value.trim();
@@ -480,7 +508,6 @@
         }
     }
 
-    // ★ Android共有対応の保存処理
     async function shareOrDownload() {
         if(db.length == 0) return alert("データがありません");
         
