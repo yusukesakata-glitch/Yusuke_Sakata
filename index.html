@@ -3,60 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>顧客マップDB Pro (複数選択版)</title>
+    <title>顧客マップDB Pro (探索版)</title>
     <style>
         :root { --primary: #007AFF; --bg: #F2F2F7; --card: #FFFFFF; --text: #1C1C1E; --gray: #8E8E93; --radius: 12px; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 15px; -webkit-font-smoothing: antialiased; padding-bottom: 100px; }
         .container { max-width: 800px; margin: 0 auto; }
 
         /* ヘッダー */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        h1 { font-size: 1.3rem; font-weight: 800; margin: 0; }
-        .btn-settings { background: #E5E5EA; color: #333; border: 1px solid #ccc; padding: 8px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.85rem; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        h1 { font-size: 1.2rem; font-weight: 800; margin: 0; }
+        .btn-settings { background: #fff; color: #333; border: 1px solid #ccc; padding: 6px 10px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.8rem; }
 
         /* マップ */
-        #map-area { height: 400px; background: #ddd; border-radius: var(--radius); margin-bottom: 15px; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        #map-area { height: 450px; background: #ddd; border-radius: var(--radius); margin-bottom: 15px; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
         #map-msg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #555; font-weight: bold; background: rgba(255,255,255,0.9); padding: 15px; border-radius: 12px; width: 80%; text-align: center; }
 
-        /* フィルタエリア (2列に変更) */
+        /* ★マップ上のコントロール */
+        .map-control-panel {
+            position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+            background: rgba(255,255,255,0.95); padding: 8px 15px; border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 10; font-size: 0.9rem; font-weight: bold;
+            display: flex; align-items: center; gap: 10px; white-space: nowrap;
+        }
+        .toggle-switch { position: relative; display: inline-block; width: 40px; height: 24px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--primary); }
+        input:checked + .slider:before { transform: translateX(16px); }
+
+        /* フィルタ・検索 */
         .filter-area { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
         select { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #ccc; background: #fff; font-size: 0.85rem; font-weight: bold; color: var(--primary); appearance: none; -webkit-appearance: none; }
-
-        /* 検索窓 */
         .search-box { position: relative; margin-bottom: 10px; }
         .search-box input { width: 100%; padding: 12px 12px 12px 40px; border-radius: 12px; border: 2px solid var(--primary); background: #fff; font-size: 16px; box-sizing: border-box; }
         .search-icon { position: absolute; left: 12px; top: 12px; font-size: 1.2rem; color: var(--primary); }
 
-        /* 集計エリア & 複数選択ボタン */
+        /* 集計エリア */
         #stats-area { background: #fff; border-radius: 12px; padding: 15px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: none; }
-        .stats-total { font-size: 1.1rem; font-weight: 800; color: #333; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 5px; display:flex; justify-content:space-between; align-items:center;}
-        .display-count { font-size: 0.8rem; color: #fff; background: var(--primary); padding: 2px 8px; border-radius: 10px; margin-left: 10px;}
-        
+        .stats-total { font-size: 1rem; font-weight: 800; color: #333; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 5px; display:flex; justify-content:space-between; align-items:center;}
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
-        
-        /* 担当者ボタンのデザイン */
-        .stats-item { 
-            font-size: 0.85rem; color: #555; display: flex; justify-content: space-between; 
-            background: #f9f9f9; padding: 8px 12px; border-radius: 6px; 
-            cursor: pointer; transition: all 0.2s; border: 2px solid transparent; user-select: none;
-        }
-        .stats-item:hover { transform: translateY(-2px); }
-        .stats-item:active { transform: translateY(0); }
-        
-        /* 選択状態 */
-        .stats-item.selected { background-color: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 2px 6px rgba(0,122,255,0.3); }
+        .stats-item { font-size: 0.8rem; color: #555; display: flex; justify-content: space-between; background: #f9f9f9; padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 2px solid transparent; user-select: none; }
+        .stats-item.selected { background-color: var(--primary); color: white; border-color: var(--primary); }
         .stats-item.selected .stats-count { color: white; }
-        
         .stats-count { font-weight: bold; color: var(--primary); }
 
         /* メニュー */
         .card { background: var(--card); padding: 15px; border-radius: var(--radius); box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
         h3 { margin: 0; font-size: 1rem; color: var(--primary); cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
-        
         label { display: block; font-size: 0.75rem; font-weight: bold; color: var(--gray); margin-bottom: 4px; margin-top: 10px; }
         input[type="text"], input[type="password"], textarea { width: 100%; padding: 10px; border: 1px solid #E5E5EA; background: #FAFAFA; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
         textarea { height: 80px; font-family: monospace; white-space: pre; overflow-x: scroll; }
-
         button { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; font-size: 15px; transition: opacity 0.2s; margin-top: 10px; }
         button:active { opacity: 0.7; }
         .btn-main { background: var(--primary); color: white; }
@@ -64,9 +61,7 @@
         .btn-danger { background: #FF3B30; color: white; margin-top: 15px; }
         .btn-key { background: #34C759; color: white; width: auto; padding: 8px 15px; font-size: 0.85rem; margin-top: 0; margin-left: 5px; }
         .data-tools { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px; }
-
         .btn-load-more { background: #fff; color: var(--primary); border: 2px solid var(--primary); margin-top: 20px; font-size: 1rem; padding: 15px; }
-        .btn-load-more:active { background: #f0f8ff; }
 
         /* リスト */
         .station-group { background: var(--card); border-radius: 12px; overflow: hidden; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
@@ -75,7 +70,6 @@
         .info-main { font-weight: bold; font-size: 1rem; margin-bottom: 3px; color: #333; }
         .info-sub { font-size: 0.8rem; color: #666; margin-bottom: 2px; line-height: 1.3; }
         .tag { display: inline-block; background: #eee; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; color: #555; margin-right: 5px; font-family: monospace; }
-        
         .action-area { display: flex; gap: 12px; margin-top: 5px; }
         .icon-btn { text-decoration: none; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: #F2F2F7; border-radius: 50%; font-size: 1.2rem; color: #333; transition: background 0.2s; }
         .icon-btn.call { color: #34C759; }
@@ -102,7 +96,16 @@
         <button class="btn-settings" onclick="openSettings()">⚙️ 設定・管理</button>
     </div>
 
-    <div id="map-area"><span id="map-msg">APIキーを設定すると地図が表示されます</span></div>
+    <div id="map-area">
+        <span id="map-msg">APIキーを設定すると地図が表示されます</span>
+        <div class="map-control-panel">
+            <span>🗺️ 地図連動</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="mapSyncToggle" onchange="toggleMapSync()">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
 
     <div class="filter-area">
         <select id="prefFilter" onchange="resetAndRender()"><option value="ALL">都道府県: 全て</option></select>
@@ -117,9 +120,8 @@
     <div id="stats-area">
         <div class="stats-total">
             <span id="stats-total-text"></span>
-            <span class="display-count" id="display-count-text"></span>
+            <span style="font-size:0.8rem; color:#888;">※青ボタンで担当絞込</span>
         </div>
-        <p style="font-size:0.8rem; color:#888; margin:0 0 10px 0;">※担当者名タップで絞り込み（複数選択可）</p>
         <div class="stats-grid" id="stats-detail"></div>
     </div>
 
@@ -130,7 +132,10 @@
                 <input type="password" id="apiKey" placeholder="API Key (New API)" style="margin-bottom:0; flex-grow:1;">
                 <button class="btn-key" onclick="saveKeyAndInit()">キー保存</button>
             </div>
-            <label>担当者名 (オプション)</label><input type="text" id="repName" placeholder="例: 佐藤">
+            
+            <label>自分の担当者名 (一致するとピンが青になります)</label>
+            <input type="text" id="myRepName" placeholder="例: 佐藤" onchange="localStorage.setItem('map_myname', this.value); render();">
+            
             <label>リスト貼り付け (5列: Rコード|法人名|店舗名|住所|電話)</label>
             <textarea id="csvInput" placeholder="R001	(株)ABC	大宮店	埼玉県...	090-1234-5678"></textarea>
             <button class="btn-main" id="runBtn" onclick="processData()">登録＆分析スタート</button>
@@ -186,8 +191,9 @@
     const DB_NAME = "map_db"; 
     // ★★★★★★★★★★★★★★★★★★★★★★★
     
-    let currentLimit = 100; // 初期表示件数
-    let activeReps = new Set(); // 選択中の担当者
+    let currentLimit = 100;
+    let activeReps = new Set();
+    let mapSyncMode = false; // 地図連動モードの状態
     
     let db = [];
     let map, geocoder, Place, AdvancedMarkerElement;
@@ -202,6 +208,9 @@
     window.onload = () => {
         const k = localStorage.getItem('map_apiKey');
         const d = localStorage.getItem(DB_NAME);
+        const mn = localStorage.getItem('map_myname'); // 自分の名前
+        if(mn) document.getElementById('myRepName').value = mn;
+
         if(k) document.getElementById('apiKey').value = k;
         if(d) { try { db = JSON.parse(d); populateFilters(); resetAndRender(); } catch(e){ db=[]; } }
         if(k) initSystem(k).then(()=>{ document.getElementById('map-msg').style.display='none'; }).catch(()=>{});
@@ -227,19 +236,33 @@
     async function saveKeyAndInit() { const k=document.getElementById('apiKey').value; if(!k)return alert("APIキーを入れて"); localStorage.setItem('map_apiKey', k); await initSystem(k); alert("保存しました"); }
     async function initSystem(key) {
         if(window.google && map) return;
-        await new Promise((res,rej)=>{ if(document.querySelector('script[src*="maps.googleapis.com"]'))return res(); const s=document.createElement('script'); s.src=`https://maps.googleapis.com/maps/api/js?key=${key}&loading=async&libraries=places,geocoding`; s.async=true; s.onload=res; s.onerror=rej; document.head.appendChild(s); });
+        await new Promise((res,rej)=>{ if(document.querySelector('script[src*="maps.googleapis.com"]'))return res(); const s=document.createElement('script'); s.src=`https://maps.googleapis.com/maps/api/js?key=${key}&loading=async&libraries=places,geocoding,geometry`; s.async=true; s.onload=res; s.onerror=rej; document.head.appendChild(s); });
         try {
             const { Map } = await google.maps.importLibrary("maps"); const { Geocoder } = await google.maps.importLibrary("geocoding");
             const { Place: PlaceLib } = await google.maps.importLibrary("places"); const { AdvancedMarkerElement: MarkerLib } = await google.maps.importLibrary("marker");
             geocoder = new Geocoder(); Place = PlaceLib; AdvancedMarkerElement = MarkerLib;
             const div = document.getElementById('map-area');
-            if(!map) { map = new Map(div, { center:{lat:35.68, lng:139.76}, zoom:10, mapId: "DEMO_MAP_ID" }); infoWindow = new google.maps.InfoWindow(); }
+            if(!map) { 
+                map = new Map(div, { center:{lat:35.68, lng:139.76}, zoom:13, mapId: "DEMO_MAP_ID" }); 
+                infoWindow = new google.maps.InfoWindow(); 
+                
+                // ★地図移動時のイベント
+                map.addListener('idle', () => {
+                    if(mapSyncMode) {
+                        resetAndRender(); // 移動したら再計算して描画
+                    }
+                });
+            }
             if(db.length > 0) render(); 
         } catch(e) { log("初期化エラー: "+e, "err"); }
     }
 
     async function processData() {
-        const key = document.getElementById('apiKey').value.trim(); const csv = document.getElementById('csvInput').value.trim(); const rep = document.getElementById('repName').value.trim();
+        const key = document.getElementById('apiKey').value.trim(); const csv = document.getElementById('csvInput').value.trim(); 
+        // 登録時の担当者名は、自分の名前欄に入力があればそれを使う
+        const myName = document.getElementById('myRepName').value.trim();
+        if(myName) localStorage.setItem('map_myname', myName);
+
         if(!key || !csv) return alert('入力してください'); localStorage.setItem('map_apiKey', key);
         const btn = document.getElementById('runBtn'); btn.disabled = true; btn.innerText = "処理中..."; document.getElementById('log-area').innerHTML = ""; 
         try {
@@ -257,12 +280,12 @@
                 try {
                     const coords = await withTimeout(getCoordinates(cleanAddr), 3000);
                     const stName = await withTimeout(getStationNew(coords), 3000);
-                    const newData = { id: Date.now().toString(36)+Math.random(), r_code: r, name: fullName, address: addr, tel: tel, station: stName, lat: coords.lat, lng: coords.lng, rep_name: rep, time:"", note:"" };
+                    const newData = { id: Date.now().toString(36)+Math.random(), r_code: r, name: fullName, address: addr, tel: tel, station: stName, lat: coords.lat, lng: coords.lng, rep_name: myName, time:"", note:"" };
                     if(existIdx !== -1) db[existIdx] = newData; else db.push(newData);
                     log(`OK: ${stName}`, "ok"); count++;
                 } catch(e) {
                     const msg = e.message || e; log(`失敗: ${fullName} (${msg})`, "warn");
-                    const failData = { id: Date.now().toString(), r_code: r, name: fullName, address: addr, tel: tel, station: `未特定`, lat: null, lng: null, rep_name: rep, time:"", note:"" };
+                    const failData = { id: Date.now().toString(), r_code: r, name: fullName, address: addr, tel: tel, station: `未特定`, lat: null, lng: null, rep_name: myName, time:"", note:"" };
                     if(existIdx !== -1) db[existIdx] = failData; else db.push(failData);
                 }
                 await new Promise(r => setTimeout(r, 600));
@@ -279,9 +302,27 @@
         if(!map || !AdvancedMarkerElement) return;
         markers.forEach(m => m.setMap(null)); markers = [];
         const bounds = new google.maps.LatLngBounds(); let hasPin = false;
+        
+        // ピンの色分け
+        const myName = document.getElementById('myRepName').value.trim();
+
         list.forEach(c => {
             if(c.lat && c.lng) {
-                const m = new AdvancedMarkerElement({ position: {lat:c.lat, lng:c.lng}, map: map, title: c.name });
+                const isMe = (c.rep_name === myName);
+                const color = isMe ? "#007AFF" : "#FF3B30"; // 自分=青、他=赤
+                
+                const pinView = document.createElement("div");
+                pinView.style.backgroundColor = color;
+                pinView.style.width = "14px"; pinView.style.height = "14px";
+                pinView.style.borderRadius = "50%";
+                pinView.style.border = "2px solid white";
+                pinView.style.boxShadow = "0 2px 4px rgba(0,0,0,0.3)";
+
+                const m = new AdvancedMarkerElement({ position: {lat:c.lat, lng:c.lng}, map: map, title: c.name, content: pinView });
+                
+                // Z-index調整（自分を手前に）
+                m.zIndex = isMe ? 100 : 1;
+
                 const noteHtml = c.note ? `<div style="background:#fff9c4;padding:4px;font-size:0.8rem;margin-bottom:5px;">📝 ${c.note}</div>` : "";
                 const telHtml = c.tel ? `<div style="margin-bottom:5px;font-weight:bold;">📞 <a href="tel:${c.tel}">${c.tel}</a></div>` : "";
                 m.addListener("click", () => {
@@ -291,7 +332,8 @@
                 markers.push(m); bounds.extend({lat:c.lat, lng:c.lng}); hasPin = true;
             }
         });
-        if(hasPin) map.fitBounds(bounds);
+        // 地図連動モードのときは勝手にズーム変更しない
+        if(hasPin && !mapSyncMode) map.fitBounds(bounds);
     }
     function panToMap(lat, lng) { if(map && lat && lng) { map.setZoom(16); map.panTo({lat, lng}); const t = markers.find(m => Math.abs(m.position.lat-lat)<1e-5 && Math.abs(m.position.lng-lng)<1e-5); if(t) google.maps.event.trigger(t, 'click'); document.getElementById('map-area').scrollIntoView({behavior:'smooth', block:'center'}); } }
 
@@ -309,6 +351,14 @@
         [...new Set(t.map(x=>x.station||"未特定"))].sort().forEach(s=>{const o=document.createElement('option');o.value=s;o.innerText=s;sSel.appendChild(o)});
     }
 
+    function toggleMapSync() {
+        mapSyncMode = document.getElementById('mapSyncToggle').checked;
+        if(mapSyncMode) {
+            // ONにした瞬間、今の中心で検索
+            resetAndRender();
+        }
+    }
+
     function resetAndRender() {
         currentLimit = 100;
         render();
@@ -319,13 +369,8 @@
         render();
     }
 
-    // ★ クリックで複数選択・解除する関数
     function toggleRep(name) {
-        if(activeReps.has(name)) {
-            activeReps.delete(name);
-        } else {
-            activeReps.add(name);
-        }
+        if(activeReps.has(name)) activeReps.delete(name); else activeReps.add(name);
         resetAndRender();
     }
 
@@ -336,26 +381,39 @@
         const q = normalize(document.getElementById('searchInput').value);
 
         // 1. 全データから基本の絞り込み
-        const filtered = db.filter(d => {
+        let filtered = db.filter(d => {
             if(fPref !== "ALL" && getPrefecture(d.address) !== fPref) return false;
             if(fSt !== "ALL" && (d.station||"未特定") !== fSt) return false;
             if(!q) return true;
             return normalize((d.r_code||"")+(d.name||"")+(d.address||"")+(d.note||"")+(d.rep_name||"")+(d.station||"")).includes(q);
         });
 
-        // 2. 担当者リスト(集計)を作成
+        // ★地図連動ロジック
+        if(mapSyncMode && map) {
+            const center = map.getCenter();
+            // 距離計算してソート (近い順)
+            filtered.forEach(d => {
+                if(d.lat && d.lng) {
+                    d._dist = google.maps.geometry.spherical.computeDistanceBetween(center, new google.maps.LatLng(d.lat, d.lng));
+                } else {
+                    d._dist = 99999999;
+                }
+            });
+            filtered.sort((a, b) => a._dist - b._dist);
+        } else {
+            // 通常モード: 担当者名順
+            filtered.sort((a, b) => (a.rep_name||"").localeCompare(b.rep_name||"", 'ja'));
+        }
+
+        // 2. 集計 (担当者ボタン)
         const statsArea = document.getElementById('stats-area');
         const totalText = document.getElementById('stats-total-text');
-        const countText = document.getElementById('display-count-text');
         const detailBox = document.getElementById('stats-detail');
-
         const counts = {};
         filtered.forEach(d => { const r = d.rep_name || "担当なし"; counts[r] = (counts[r] || 0) + 1; });
 
         if(filtered.length > 0) {
             statsArea.style.display = 'block';
-            
-            // 担当者ボタン描画
             let html = "";
             Object.keys(counts).sort().forEach(key => { 
                 const isActive = activeReps.has(key) ? 'selected' : '';
@@ -366,46 +424,52 @@
             statsArea.style.display = 'none';
         }
 
-        // 3. 担当者フィルタを適用（選択があれば絞り込み、なければ全員）
+        // 3. 担当者フィルタ適用
         let finalTargets = filtered;
         if(activeReps.size > 0) {
             finalTargets = filtered.filter(d => activeReps.has(d.rep_name || "担当なし"));
         }
 
-        // 4. 並び替え (担当者名 > ID順)
-        finalTargets.sort((a, b) => {
-            const nA = a.rep_name || ""; const nB = b.rep_name || "";
-            return nA.localeCompare(nB, 'ja');
-        });
+        // 件数表示
+        totalText.innerText = mapSyncMode ? `地図中心から近い順: ${filtered.length} 件` : `全ヒット: ${filtered.length} 件`;
 
-        // 件数表示更新
-        totalText.innerText = `全ヒット: ${filtered.length} 件 (選択中: ${finalTargets.length} 件)`;
-        const showing = Math.min(finalTargets.length, currentLimit);
-        countText.innerText = `表示: ${showing} 件`;
-
-        // 5. 表示制限 & 描画
+        // 4. 表示制限
         const displayTargets = finalTargets.slice(0, currentLimit);
         updateMapPins(displayTargets);
 
-        const groups = {};
-        displayTargets.forEach(d => {
-            let p = getPrefecture(d.address); if(!groups[p]) groups[p] = {};
-            let s = d.station || "未特定"; if(!groups[p][s]) groups[p][s] = [];
-            groups[p][s].push(d);
-        });
-        const prefs = PREF_ORDER.filter(p => groups[p]).concat(Object.keys(groups).filter(p => !PREF_ORDER.includes(p)));
-
-        prefs.forEach(pref => {
-            const h = document.createElement('h3'); h.innerText = pref; h.style.borderBottom="2px solid #eee"; area.appendChild(h);
-            Object.keys(groups[pref]).sort().forEach(st => {
-                const list = groups[pref][st];
-                const box = document.createElement('div'); box.className = 'station-group';
-                let html = `<div class="station-header">🚉 ${st} <span style="float:right">${list.length}件</span></div>`;
-                list.forEach(c => {
-                    html += `<div class="customer-item"><div style="flex:1;"><div class="info-main">${c.name}</div><div class="info-sub"><span class="tag">${c.r_code||"-"}</span>${c.rep_name||""}</div>${c.tel ? `<div class="info-sub">📞 <a href="tel:${c.tel}" style="color:#007AFF;text-decoration:none;font-weight:bold;">${c.tel}</a></div>` : ""}<div class="info-sub">${c.address}</div>${c.note ? `<div class="info-sub" style="color:#E6B800;margin-top:2px;">📝 ${c.note}</div>` : ""}</div><div class="action-area"><a href="javascript:void(0)" onclick="openEdit('${c.id}')" class="icon-btn" title="編集">✎</a><a href="javascript:void(0)" onclick="panToMap(${c.lat}, ${c.lng})" class="icon-btn map" title="地図">📍</a><a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(c.address)}&travelmode=walking" target="_blank" class="icon-btn call" title="ルート">🚶</a></div></div>`;
-                });
-                box.innerHTML = html; area.appendChild(box);
-            });
+        // 5. リスト描画
+        const myName = document.getElementById('myRepName').value.trim();
+        
+        // 地図連動のときは「距離順」で見せたいので、駅グループ化をやめてフラットなリストにするか？
+        // -> 今回はデザイン統一のため「グループ化」は維持しつつ、グループの並び順等は維持。
+        // ただし4000件あると駅グループも多すぎるので、シンプルにリスト表示する
+        
+        // ※高速化のため、DOM生成をシンプルに
+        displayTargets.forEach(c => {
+            const isMe = (c.rep_name === myName);
+            const color = isMe ? "#007AFF" : "#FF3B30";
+            
+            const div = document.createElement('div');
+            div.className = 'customer-item';
+            div.style.background = "#fff"; div.style.borderRadius = "8px"; div.style.marginBottom="8px"; div.style.boxShadow="0 1px 3px rgba(0,0,0,0.1)";
+            
+            div.innerHTML = `
+                <div style="flex:1;">
+                    <div class="info-main">
+                        <span style="background:${color};width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:5px;"></span>
+                        ${c.name}
+                    </div>
+                    <div class="info-sub"><span class="tag">${c.r_code||"-"}</span>${c.rep_name||""}</div>
+                    ${c.tel ? `<div class="info-sub">📞 <a href="tel:${c.tel}" style="color:#007AFF;text-decoration:none;font-weight:bold;">${c.tel}</a></div>` : ""}
+                    <div class="info-sub">${c.address}</div>
+                    ${c.note ? `<div class="info-sub" style="color:#E6B800;margin-top:2px;">📝 ${c.note}</div>` : ""}
+                </div>
+                <div class="action-area">
+                    <a href="javascript:void(0)" onclick="openEdit('${c.id}')" class="icon-btn" title="編集">✎</a>
+                    <a href="javascript:void(0)" onclick="panToMap(${c.lat}, ${c.lng})" class="icon-btn map" title="地図">📍</a>
+                    <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(c.address)}&travelmode=walking" target="_blank" class="icon-btn call" title="ルート">🚶</a>
+                </div>`;
+            area.appendChild(div);
         });
         
         const btnArea = document.getElementById('load-more-area');
