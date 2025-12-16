@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>顧客マップDB Pro (完成版)</title>
+    <title>顧客マップDB Pro (UI改善版)</title>
     <style>
         :root { --primary: #007AFF; --bg: #F2F2F7; --card: #FFFFFF; --text: #1C1C1E; --gray: #8E8E93; --radius: 12px; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 15px; -webkit-font-smoothing: antialiased; padding-bottom: 100px; }
@@ -14,32 +14,46 @@
         h1 { font-size: 1.3rem; font-weight: 800; margin: 0; }
         .btn-settings { background: #fff; color: #333; border: 2px solid #ddd; padding: 8px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.85rem; }
 
-        /* ★新設：地名ジャンプエリア */
-        .jump-area { display: flex; gap: 8px; margin-bottom: 10px; }
-        .jump-input { flex: 1; padding: 10px; border-radius: 8px; border: 2px solid #ddd; font-size: 16px; box-sizing: border-box; }
-        .btn-jump { background: #333; color: #fff; border: none; padding: 0 20px; border-radius: 8px; font-weight: bold; cursor: pointer; white-space: nowrap; }
-        .btn-jump:active { opacity: 0.7; }
-
-        /* マップ */
-        #map-area { height: 450px; background: #ddd; border-radius: var(--radius); margin-bottom: 15px; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        /* マップエリア (ここに検索バーを乗せる) */
+        #map-area { height: 500px; background: #ddd; border-radius: var(--radius); margin-bottom: 15px; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.15); overflow: hidden; }
         #map-msg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #555; font-weight: bold; background: rgba(255,255,255,0.9); padding: 15px; border-radius: 12px; width: 80%; text-align: center; }
 
+        /* ★ Google Maps風検索バー */
+        .map-search-bar {
+            position: absolute; top: 15px; left: 15px; right: 15px; z-index: 10;
+            display: flex; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border-radius: 8px;
+            background: #fff; height: 50px; /* 高さ確保 */
+        }
+        .map-search-input {
+            flex: 1; border: none; padding: 0 15px; font-size: 1.1rem; /* 文字大きく */
+            border-radius: 8px 0 0 8px; outline: none; appearance: none;
+        }
+        .map-search-btn {
+            width: 60px; background: #fff; border: none; border-left: 1px solid #eee;
+            border-radius: 0 8px 8px 0; cursor: pointer; font-size: 1.2rem; color: var(--primary);
+            font-weight: bold;
+        }
+        .map-search-btn:active { background: #f0f0f0; }
+
+        /* ★ 地図連動スイッチ (下に移動) */
         .map-control-panel {
-            position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
-            background: rgba(255,255,255,0.95); padding: 8px 15px; border-radius: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 10; font-size: 0.9rem; font-weight: bold;
+            position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%);
+            background: rgba(255,255,255,0.95); padding: 10px 20px; border-radius: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3); z-index: 10; font-size: 0.9rem; font-weight: bold;
             display: flex; align-items: center; gap: 10px; white-space: nowrap;
         }
-        .toggle-switch { position: relative; display: inline-block; width: 40px; height: 24px; }
+        .toggle-switch { position: relative; display: inline-block; width: 44px; height: 26px; }
         .toggle-switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--primary); }
-        input:checked + .slider:before { transform: translateX(16px); }
+        input:checked + .slider:before { transform: translateX(18px); }
 
         /* フィルタ */
         .filter-area { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-        select { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #ccc; background: #fff; font-size: 0.85rem; font-weight: bold; color: var(--primary); appearance: none; -webkit-appearance: none; }
+        select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ccc; background: #fff; font-size: 0.9rem; font-weight: bold; color: var(--primary); appearance: none; -webkit-appearance: none; }
+        
+        /* リスト内検索窓 */
         .search-box { position: relative; margin-bottom: 10px; }
         .search-box input { width: 100%; padding: 12px 12px 12px 40px; border-radius: 12px; border: 2px solid var(--primary); background: #fff; font-size: 16px; box-sizing: border-box; }
         .search-icon { position: absolute; left: 12px; top: 12px; font-size: 1.2rem; color: var(--primary); }
@@ -58,11 +72,9 @@
         /* メニュー */
         .card { background: var(--card); padding: 15px; border-radius: var(--radius); box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
         h3 { margin: 0; font-size: 1rem; color: var(--primary); cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
-        
         label { display: block; font-size: 0.75rem; font-weight: bold; color: var(--gray); margin-bottom: 4px; margin-top: 10px; }
-        input[type="text"], input[type="password"], textarea { width: 100%; padding: 10px; border: 1px solid #E5E5EA; background: #FAFAFA; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        input[type="text"], input[type="password"], textarea { width: 100%; padding: 12px; border: 1px solid #E5E5EA; background: #FAFAFA; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
         textarea { height: 80px; font-family: monospace; white-space: pre; overflow-x: scroll; }
-
         button { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; font-size: 15px; transition: opacity 0.2s; margin-top: 10px; }
         button:active { opacity: 0.7; }
         .btn-main { background: var(--primary); color: white; }
@@ -98,12 +110,10 @@
         
         .settings-section { margin-bottom: 20px; border: 1px solid #eee; padding: 10px; border-radius: 8px; }
         .settings-section h4 { margin: 0 0 10px 0; color: var(--primary); font-size: 0.95rem; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-        
         .rep-checklist { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; max-height: 200px; overflow-y: auto; }
         .rep-check-item { display: flex; align-items: center; padding: 5px; background: #fafafa; border-radius: 4px; font-size: 0.85rem; }
         .rep-check-item input { width: auto; margin-right: 8px; transform: scale(1.2); }
         .rep-check-item label { margin: 0; width: 100%; cursor: pointer; color: #333; }
-        .rep-check-item:hover { background: #f0f8ff; }
     </style>
 </head>
 <body>
@@ -114,13 +124,14 @@
         <button class="btn-settings" onclick="openSettings()">⚙️ 設定・管理</button>
     </div>
 
-    <div class="jump-area">
-        <input type="text" id="mapJumpInput" class="jump-input" placeholder="📍 地名で地図移動 (例: 銀座, 大阪駅)">
-        <button class="btn-jump" onclick="searchMapLocation()">移動</button>
-    </div>
-
     <div id="map-area">
         <span id="map-msg">APIキーを設定すると地図が表示されます</span>
+        
+        <div class="map-search-bar">
+            <input type="text" id="mapJumpInput" class="map-search-input" placeholder="ここを検索 (例: 銀座, 東京駅)" onkeydown="if(event.key==='Enter')searchMapLocation()">
+            <button class="map-search-btn" onclick="searchMapLocation()">🔍</button>
+        </div>
+
         <div class="map-control-panel">
             <span>🗺️ 地図連動</span>
             <label class="toggle-switch">
@@ -137,7 +148,7 @@
     
     <div class="search-box">
         <span class="search-icon">🔍</span>
-        <input type="text" id="searchInput" placeholder="検索 (駅名, Rコード, 店名, 住所...)" oninput="resetAndRender()">
+        <input type="text" id="searchInput" placeholder="リスト内検索 (担当名, Rコード, 店名...)" oninput="resetAndRender()">
     </div>
 
     <div id="stats-area">
@@ -204,13 +215,11 @@
 <div id="settingsModal" class="modal-overlay">
     <div class="modal-content">
         <h3 style="text-align:center; margin-top:0;">設定・データ管理</h3>
-        
         <div class="settings-section">
             <h4>📍 青ピンにする担当者 (選択)</h4>
             <div style="font-size:0.75rem; color:#666; margin-bottom:5px;">※チェックを入れた担当者が地図上で青くなります</div>
             <div id="rep-checklist" class="rep-checklist"></div>
         </div>
-
         <div class="settings-section">
             <h4>💾 保存データ管理</h4>
             <div style="background:#F2F2F7; padding:10px; border-radius:8px; margin-bottom:10px;">
@@ -219,7 +228,6 @@
             </div>
             <div id="storage-list" style="max-height:150px; overflow-y:auto; border:1px solid #eee; border-radius:8px;"></div>
         </div>
-
         <button class="btn-sub" onclick="document.getElementById('settingsModal').style.display='none'">閉じる</button>
     </div>
 </div>
@@ -245,10 +253,8 @@
     window.onload = () => {
         const k = localStorage.getItem('map_apiKey');
         const d = localStorage.getItem(DB_NAME);
-        
         const tr = localStorage.getItem('map_target_reps_json');
         if(tr) { try { targetReps = JSON.parse(tr); } catch(e) { targetReps=[]; } }
-
         if(k) document.getElementById('apiKey').value = k;
         if(d) { try { db = JSON.parse(d); populateFilters(); resetAndRender(); } catch(e){ db=[]; } }
         if(k) initSystem(k).then(()=>{ document.getElementById('map-msg').style.display='none'; }).catch(()=>{});
@@ -306,7 +312,7 @@
             geocoder = new Geocoder(); Place = PlaceLib; AdvancedMarkerElement = MarkerLib;
             const div = document.getElementById('map-area');
             if(!map) { 
-                map = new Map(div, { center:{lat:35.68, lng:139.76}, zoom:13, mapId: "DEMO_MAP_ID" }); 
+                map = new Map(div, { center:{lat:35.68, lng:139.76}, zoom:13, mapId: "DEMO_MAP_ID", mapTypeControl: false, streetViewControl: false }); 
                 infoWindow = new google.maps.InfoWindow(); 
                 map.addListener('idle', () => { if(mapSyncMode) resetAndRender(); });
             }
@@ -319,12 +325,11 @@
         const input = document.getElementById('mapJumpInput').value;
         if(!input) return;
         if(!geocoder || !map) return alert("地図の準備がまだです");
-        
         geocoder.geocode({ address: input }, (results, status) => {
             if (status === 'OK') {
                 map.setCenter(results[0].geometry.location);
-                map.setZoom(14); // ほどよいズームへ
-                if(mapSyncMode) resetAndRender(); // 連動モードならリストも更新
+                map.setZoom(14); 
+                if(mapSyncMode) resetAndRender();
             } else {
                 alert('見つかりませんでした: ' + status);
             }
@@ -334,7 +339,6 @@
     async function processData() {
         const key = document.getElementById('apiKey').value.trim(); const csv = document.getElementById('csvInput').value.trim(); 
         const newRepName = document.getElementById('repName').value.trim();
-
         if(!key || !csv) return alert('入力してください'); localStorage.setItem('map_apiKey', key);
         const btn = document.getElementById('runBtn'); btn.disabled = true; btn.innerText = "処理中..."; document.getElementById('log-area').innerHTML = ""; 
         try {
