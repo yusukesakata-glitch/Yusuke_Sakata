@@ -5,102 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>顧客マップDB Pro</title>
     <style>
-        /* --- モダンデザイン定義 (Apple/Google Maps風) --- */
+        /* --- デザイン定義 --- */
         :root {
-            --primary: #007AFF; 
-            --primary-bg: #E3F2FD;
-            --bg: #F5F5F7; 
-            --card: #FFFFFF; 
-            --text-main: #1C1C1E; 
-            --text-sub: #8E8E93;
-            --shadow: 0 4px 16px rgba(0,0,0,0.06);
-            --radius: 16px;
+            --primary: #007AFF; --primary-bg: #E3F2FD; --bg: #F5F5F7; --card: #FFFFFF; 
+            --text-main: #1C1C1E; --text-sub: #8E8E93; --shadow: 0 4px 16px rgba(0,0,0,0.06); --radius: 16px;
         }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; background-color: var(--bg); color: var(--text-main); margin: 0; padding: 0; height: 100vh; overflow-y: auto; -webkit-tap-highlight-color: transparent; }
 
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; 
-            background-color: var(--bg); 
-            color: var(--text-main); 
-            margin: 0; padding: 0; 
-            height: 100vh; overflow-y: auto;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        /* --- レイアウト (PC/スマホ) --- */
-        .app-container {
-            display: flex; flex-direction: column; height: 100%; max-width: 1600px; margin: 0 auto; padding: 15px; box-sizing: border-box; gap: 15px;
-        }
+        /* --- レイアウト --- */
+        .app-container { display: flex; flex-direction: column; height: 100%; max-width: 1600px; margin: 0 auto; padding: 15px; box-sizing: border-box; gap: 15px; }
         @media (min-width: 900px) {
             body { overflow: hidden; }
             .app-container { flex-direction: row; padding: 20px; }
-            /* PC: 左に地図、右にリスト */
             .left-section { flex: 2; display: flex; flex-direction: column; gap: 10px; height: 100%; }
             .right-section { flex: 1; display: flex; flex-direction: column; height: 100%; min-width: 400px; overflow-y: auto; padding-right: 5px; }
             .map-wrapper { flex: 1; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); position: relative; }
         }
         @media (max-width: 899px) {
             .app-container { display: block; padding: 10px; }
-            /* スマホ: 縦積み */
-            .map-wrapper { 
-                height: 50vh; min-height: 350px; 
-                border-radius: var(--radius); overflow: hidden; 
-                box-shadow: var(--shadow); position: relative; margin-bottom: 15px;
-            }
+            .map-wrapper { height: 50vh; min-height: 350px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); position: relative; margin-bottom: 15px; }
             .right-section { padding-bottom: 100px; }
         }
 
-        /* --- ヘッダーエリア --- */
+        /* --- UIパーツ --- */
         .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         h1 { font-size: 1.3rem; font-weight: 800; margin: 0; letter-spacing: -0.5px; }
-        .btn-settings { 
-            background: rgba(255,255,255,0.8); backdrop-filter: blur(10px);
-            border: 1px solid rgba(0,0,0,0.1); padding: 8px 12px; border-radius: 20px; 
-            font-size: 0.8rem; font-weight: 700; cursor: pointer; color: var(--primary);
-            display: flex; align-items: center; gap: 4px; transition: transform 0.1s;
-        }
-        .btn-settings:active { transform: scale(0.95); }
+        .btn-settings { background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); border: 1px solid rgba(0,0,0,0.1); padding: 8px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; cursor: pointer; color: var(--primary); display: flex; align-items: center; gap: 4px; }
 
-        /* --- 検索バー (地図の外に配置して被りを防止) --- */
+        /* 検索バー */
         .search-row { display: flex; gap: 10px; margin-bottom: 5px; }
-        .place-search-box {
-            flex: 1; display: flex; align-items: center;
-            background: #fff; border-radius: 12px; padding: 2px 5px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid transparent;
-        }
-        .place-search-box:focus-within { border-color: var(--primary); }
-        .place-search-input {
-            flex: 1; border: none; padding: 10px; font-size: 0.95rem; border-radius: 12px; outline: none;
-        }
-        .place-search-btn {
-            background: none; border: none; font-size: 1.2rem; padding: 0 10px; color: var(--primary); cursor: pointer;
-        }
+        .place-search-box { flex: 1; display: flex; align-items: center; background: #fff; border-radius: 12px; padding: 2px 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid transparent; }
+        .place-search-input { flex: 1; border: none; padding: 10px; font-size: 0.95rem; border-radius: 12px; outline: none; }
+        .place-search-btn { background: none; border: none; font-size: 1.2rem; padding: 0 10px; color: var(--primary); cursor: pointer; }
 
-        /* --- マップエリア内部 --- */
+        /* マップ */
         #map-area { background: #E5E5EA; width: 100%; height: 100%; }
         #google-map-view { width: 100%; height: 100%; }
-        
-        /* 現在地ボタン (右下) */
-        .btn-current-loc {
-            position: absolute; bottom: 25px; right: 15px; z-index: 10;
-            width: 50px; height: 50px; background: #fff; border-radius: 50%;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15); border: none;
-            font-size: 1.6rem; color: #555; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
+        .btn-current-loc { position: absolute; bottom: 25px; right: 15px; z-index: 10; width: 50px; height: 50px; background: #fff; border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.15); border: none; font-size: 1.6rem; color: #555; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
         .btn-current-loc.locked { background: var(--primary); color: white; box-shadow: 0 4px 20px rgba(0,122,255,0.4); }
         .btn-current-loc.unlocked { background: #fff; color: var(--primary); border: 2px solid var(--primary); }
-        .btn-current-loc:active { transform: scale(0.9); }
-
-        /* 地図連動スイッチ (右上) - Googleロゴと被らない位置へ */
-        .map-sync-wrapper {
-            position: absolute; top: 10px; right: 10px; z-index: 10;
-            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(8px);
-            padding: 6px 12px; border-radius: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            display: flex; align-items: center; gap: 8px;
-            font-weight: 700; font-size: 0.75rem; color: var(--text-main);
-        }
+        
+        .map-sync-wrapper { position: absolute; top: 10px; right: 10px; z-index: 10; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(8px); padding: 6px 12px; border-radius: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.75rem; color: var(--text-main); }
         .toggle-switch { position: relative; display: inline-block; width: 36px; height: 20px; }
         .toggle-switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .3s; border-radius: 34px; }
@@ -108,85 +53,50 @@
         input:checked + .slider { background-color: var(--primary); }
         input:checked + .slider:before { transform: translateX(16px); }
 
-        /* --- リストエリア --- */
+        /* リストエリア */
         .filter-area { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-        select { 
-            width: 100%; padding: 10px; border-radius: 10px; border: none; 
-            background: #fff; font-weight: 700; color: var(--primary); font-size: 0.85rem;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.03); appearance: none; -webkit-appearance: none; text-align: center;
-        }
-        
+        select { width: 100%; padding: 10px; border-radius: 10px; border: none; background: #fff; font-weight: 700; color: var(--primary); font-size: 0.85rem; box-shadow: 0 2px 6px rgba(0,0,0,0.03); appearance: none; -webkit-appearance: none; text-align: center; }
         .list-search-box { position: relative; margin-bottom: 15px; }
-        .list-search-box input { 
-            width: 100%; padding: 12px 12px 12px 40px; border-radius: 12px; border: none; 
-            background: #fff; font-size: 0.95rem; box-sizing: border-box; box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-        }
+        .list-search-box input { width: 100%; padding: 12px 12px 12px 40px; border-radius: 12px; border: none; background: #fff; font-size: 0.95rem; box-sizing: border-box; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
         .list-search-icon { position: absolute; left: 12px; top: 12px; color: #aaa; }
 
-        /* 集計 */
         #stats-area { background: #fff; padding: 12px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
         .stats-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid #f5f5f5; padding-bottom: 8px;}
         .stats-total { font-weight: 800; font-size: 0.95rem; color: #333; }
-        
         .limit-select { padding: 4px 8px; border-radius: 6px; border: 1px solid #eee; font-size: 0.75rem; background: #fafafa; color:#555;}
-
         .stats-grid { display: flex; flex-wrap: wrap; gap: 6px; }
-        .stats-item { 
-            font-size: 0.75rem; padding: 4px 10px; background: #F2F2F7; border-radius: 12px; 
-            cursor: pointer; border: 1px solid transparent; transition: all 0.2s;
-        }
+        .stats-item { font-size: 0.75rem; padding: 4px 10px; background: #F2F2F7; border-radius: 12px; cursor: pointer; border: 1px solid transparent; transition: all 0.2s; }
         .stats-item.selected { background: var(--primary); color: #fff; box-shadow: 0 2px 5px rgba(0,122,255,0.3); }
         .stats-count { font-weight: 800; margin-left: 3px; }
 
-        /* リストカード */
-        .customer-item { 
-            background: #fff; padding: 16px; border-radius: 14px; margin-bottom: 10px; 
-            display: flex; justify-content: space-between; align-items: flex-start;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-        }
+        .customer-item { background: #fff; padding: 16px; border-radius: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-start; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
         .info-main { font-weight: 800; font-size: 1.05rem; margin-bottom: 4px; color: var(--text-main); line-height: 1.3;}
         .info-sub { font-size: 0.8rem; color: #666; margin-bottom: 2px; }
         .tag { background: #F2F2F7; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; margin-right: 5px; color: #555; }
-        
         .action-area { display: flex; flex-direction: column; gap: 8px; margin-left: 10px; }
-        .icon-btn { 
-            width: 40px; height: 40px; border-radius: 50%; background: #F9F9F9; 
-            display: flex; align-items: center; justify-content: center; 
-            text-decoration: none; font-size: 1.1rem; transition: transform 0.1s;
-        }
+        .icon-btn { width: 40px; height: 40px; border-radius: 50%; background: #F9F9F9; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1.1rem; transition: transform 0.1s; }
         .icon-btn:active { transform: scale(0.9); }
         .icon-btn.call { color: #34C759; background: #E8F5E9; }
         .icon-btn.map { color: var(--primary); background: #E3F2FD; }
 
-        /* 登録メニュー */
+        /* メニュー・モーダル・その他 */
         .toggle-card { background: #fff; border-radius: 14px; margin-top: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); overflow: hidden; }
         .toggle-header { padding: 16px; font-weight: 800; font-size: 0.95rem; cursor: pointer; display: flex; justify-content: space-between; background: #fff; }
         .toggle-content { padding: 15px; display: none; border-top: 1px solid #f5f5f5; }
-        
         label { display: block; font-size: 0.75rem; font-weight: bold; color: #888; margin-bottom: 5px; margin-top: 15px; }
         input[type="text"], textarea { width: 100%; padding: 12px; border: 1px solid #eee; background: #FAFAFA; border-radius: 10px; box-sizing: border-box; font-size: 16px; }
-        input:focus, textarea:focus { background: #fff; border-color: var(--primary); outline: none; }
-        textarea { height: 100px; font-family: monospace; }
-        
-        .btn-main { width: 100%; padding: 14px; background: var(--primary); color: #fff; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 10px rgba(0,122,255,0.25); }
-        .btn-main:active { opacity: 0.8; }
-        
+        .btn-main { width: 100%; padding: 14px; background: var(--primary); color: #fff; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; margin-top: 15px; }
         .data-tools { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
         .btn-sub { padding: 12px; background: #F2F2F7; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 0.85rem; color: #333; }
         .btn-del { width: 100%; margin-top: 20px; padding: 12px; background: #FFF0F0; color: #FF3B30; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 0.85rem; }
-
         .btn-load-more { width: 100%; padding: 12px; background: transparent; border: 2px solid var(--primary); color: var(--primary); border-radius: 30px; font-weight: 800; margin-top: 15px; cursor: pointer; }
-
-        /* モーダル */
+        
         .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); backdrop-filter: blur(3px); display:none; justify-content:center; align-items:center; z-index:9999; }
         .modal-content { background:#fff; padding:24px; border-radius:20px; width:90%; max-width:400px; max-height:85vh; overflow-y:auto; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
         .settings-section { border: 1px solid #f0f0f0; padding: 12px; border-radius: 10px; margin-bottom: 15px; }
-        .settings-title { font-weight: 800; color: var(--primary); margin-bottom: 8px; display: block; border-bottom: 1px solid #f0f0f0; padding-bottom: 5px; font-size: 0.9rem;}
         .rep-checklist { max-height: 150px; overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 5px;}
-        
         #map-placeholder-msg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(255,255,255,0.9); padding: 20px; border-radius: 16px; font-weight: bold; color: #555; pointer-events: none; text-align: center; width: 80%; }
 
-        /* ★ ポップアップ（InfoWindow）のスタイル調整 */
         .info-window-card { font-family: sans-serif; padding: 0 5px 5px 0; max-width: 240px; }
         .info-title { font-weight: 800; font-size: 1.1rem; margin-bottom: 5px; line-height: 1.3; }
         .info-meta { font-size: 0.8rem; color: #555; margin-bottom: 8px; background: #f5f5f5; padding: 4px 8px; border-radius: 6px; display: inline-block;}
@@ -201,7 +111,6 @@
 <body>
 
 <div class="app-container">
-    
     <div class="left-section">
         <div class="search-row">
             <div class="place-search-box">
@@ -229,7 +138,7 @@
     <div class="right-section">
         <div class="header-area">
             <h1>顧客DB Pro</h1>
-            <button class="btn-settings" onclick="openSettings()">⚙️ 設定 (API/担当)</button>
+            <button class="btn-settings" onclick="openSettings()">⚙️ 設定</button>
         </div>
 
         <div class="filter-area">
@@ -239,7 +148,7 @@
         
         <div class="list-search-box">
             <span class="list-search-icon">🔍</span>
-            <input type="text" id="searchInput" placeholder="リスト内検索 (名前, 店名...)" oninput="resetAndRender()">
+            <input type="text" id="searchInput" placeholder="リスト内検索 (名前, Rコード...)" oninput="resetAndRender()">
         </div>
 
         <div id="stats-area">
@@ -526,23 +435,80 @@
         } catch(e) { alert("エラー: " + e.message); } finally { btn.disabled = false; btn.innerText = "登録＆分析スタート"; }
     }
 
-    function updateMapPins(list) {
+    // ★ マップピン更新ロジックの改善 (ハイブリッド)
+    function updateMapPins(displayTargets) {
         if(!map || !AdvancedMarkerElement) return;
         markers.forEach(m => m.setMap(null)); markers = [];
         const bounds = new google.maps.LatLngBounds(); let hasPin = false;
         
-        list.forEach(c => {
+        // ★ 地図連動ON時は、リストの絞り込み(displayTargets)ではなく、
+        // 「地図範囲内の全データ」＋「検索ヒットしたデータ」を表示する
+        let pinsToShow = displayTargets;
+
+        // 検索ワードがある場合、ハイライト用のIDリストを作成
+        const searchInput = normalize(document.getElementById('searchInput').value);
+        const hasSearch = searchInput.length > 0;
+        
+        if (mapSyncMode && map) {
+            // 地図連動中は、フィルタ(県/駅)だけ適用した全データから、地図中心に近いものを取得
+            // ※ここでは簡易的に「フィルタ通過済み全件」を対象にする（距離ソート済み前提）
+            const fPref = document.getElementById('prefFilter').value;
+            const fSt = document.getElementById('stationFilter').value;
+            
+            // フィルタ条件のみで再抽出（検索ワード無視）
+            const mapBaseData = db.filter(d => {
+                if(fPref !== "ALL" && getPrefecture(d.address) !== fPref) return false;
+                if(fSt !== "ALL" && (d.station||"未特定") !== fSt) return false;
+                return true;
+            });
+            
+            // 地図中心からの距離を計算してソート
+            const center = map.getCenter();
+            mapBaseData.forEach(d => {
+                if(d.lat && d.lng) d._dist = google.maps.geometry.spherical.computeDistanceBetween(center, new google.maps.LatLng(d.lat, d.lng));
+                else d._dist = 99999999;
+            });
+            mapBaseData.sort((a, b) => a._dist - b._dist);
+            
+            // 表示件数リミットまで取得
+            const val = document.getElementById('limitSelect').value;
+            const limit = (val === 'ALL') ? mapBaseData.length : parseInt(val);
+            pinsToShow = mapBaseData.slice(0, limit);
+        }
+
+        // ピンを作成
+        pinsToShow.forEach(c => {
             if(c.lat && c.lng) {
+                // 検索ヒット判定
+                const isHit = hasSearch && normalize((c.r_code||"")+(c.name||"")+(c.address||"")+(c.note||"")+(c.rep_name||"")+(c.station||"")).includes(searchInput);
                 const isMe = targetReps.includes(c.rep_name);
-                const color = isMe ? "#007AFF" : "#FF3B30";
-                const zIndex = isMe ? 100 : 1;
                 
+                // 色とサイズ決定
+                let bgColor = isMe ? "#007AFF" : "#FF3B30";
+                let scale = 1.0;
+                let zIndex = 1;
+
+                if (hasSearch) {
+                    if (isHit) {
+                        scale = 1.5; // ヒットしたら大きく
+                        zIndex = 1000;
+                        bgColor = "#FFD60A"; // 黄色で強調
+                    } else {
+                        scale = 0.8; // ヒットしないものは小さく
+                        // opacity入れたいがAdvancedMarkerはstyleでやる
+                    }
+                } else if (isMe) {
+                    zIndex = 100;
+                }
+
                 const pinView = document.createElement("div");
-                pinView.style.backgroundColor = color;
-                pinView.style.width = "16px"; pinView.style.height = "16px";
+                pinView.style.backgroundColor = bgColor;
+                pinView.style.width = (16 * scale) + "px";
+                pinView.style.height = (16 * scale) + "px";
                 pinView.style.borderRadius = "50%";
                 pinView.style.border = "2px solid white";
                 pinView.style.boxShadow = "0 3px 6px rgba(0,0,0,0.3)";
+                if(hasSearch && !isHit) pinView.style.opacity = "0.6"; // 薄くする
 
                 const m = new AdvancedMarkerElement({ position: {lat:c.lat, lng:c.lng}, map: map, title: c.name, content: pinView, zIndex: zIndex });
                 
@@ -570,13 +536,15 @@
                 markers.push(m); bounds.extend({lat:c.lat, lng:c.lng}); hasPin = true;
             }
         });
+        
+        // 追従モード中、または地図連動がオフの場合は、勝手にフィットさせない
         if(hasPin && !mapSyncMode && !watchId) map.fitBounds(bounds); 
     }
+
     function panToMap(lat, lng) { 
         if(map && lat && lng) { 
             map.setZoom(16); map.panTo({lat, lng}); 
-            const t = markers.find(m => Math.abs(m.position.lat-lat)<1e-6 && Math.abs(m.position.lng-lng)<1e-6); 
-            if(t) google.maps.event.trigger(t, 'click');
+            // 該当するマーカーを探す（厳密には再描画前なので見つからないかもだが、連動ONなら再描画後に表示される）
             if(window.innerWidth < 900) { document.querySelector('.left-section').scrollIntoView({behavior:'smooth', block:'start'}); }
         } 
     }
@@ -664,6 +632,7 @@
         document.getElementById('display-count-text').innerText = `表示中: ${Math.min(finalTargets.length, currentLimit)}`;
 
         const displayTargets = finalTargets.slice(0, currentLimit);
+        // ★ マップ更新関数へ（ここでハイブリッド表示処理）
         updateMapPins(displayTargets);
 
         displayTargets.forEach(c => {
