@@ -12,7 +12,6 @@
         }
         body { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; background-color: var(--bg); color: var(--text-main); margin: 0; padding: 0; height: 100vh; overflow-y: auto; -webkit-tap-highlight-color: transparent; }
 
-        /* --- レイアウト --- */
         .app-container { display: flex; flex-direction: column; height: 100%; max-width: 1600px; margin: 0 auto; padding: 15px; box-sizing: border-box; gap: 15px; }
         @media (min-width: 900px) {
             body { overflow: hidden; }
@@ -27,18 +26,15 @@
             .right-section { padding-bottom: 100px; }
         }
 
-        /* --- UIパーツ --- */
         .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         h1 { font-size: 1.3rem; font-weight: 800; margin: 0; letter-spacing: -0.5px; }
         .btn-settings { background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); border: 1px solid rgba(0,0,0,0.1); padding: 8px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; cursor: pointer; color: var(--primary); display: flex; align-items: center; gap: 4px; }
 
-        /* 検索バー */
         .search-row { display: flex; gap: 10px; margin-bottom: 5px; }
         .place-search-box { flex: 1; display: flex; align-items: center; background: #fff; border-radius: 12px; padding: 2px 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid transparent; }
         .place-search-input { flex: 1; border: none; padding: 10px; font-size: 0.95rem; border-radius: 12px; outline: none; }
         .place-search-btn { background: none; border: none; font-size: 1.2rem; padding: 0 10px; color: var(--primary); cursor: pointer; }
 
-        /* マップ */
         #map-area { background: #E5E5EA; width: 100%; height: 100%; }
         #google-map-view { width: 100%; height: 100%; }
         .btn-current-loc { position: absolute; bottom: 25px; right: 15px; z-index: 10; width: 50px; height: 50px; background: #fff; border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.15); border: none; font-size: 1.6rem; color: #555; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
@@ -53,7 +49,6 @@
         input:checked + .slider { background-color: var(--primary); }
         input:checked + .slider:before { transform: translateX(16px); }
 
-        /* リストエリア */
         .filter-area { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
         select { width: 100%; padding: 10px; border-radius: 10px; border: none; background: #fff; font-weight: 700; color: var(--primary); font-size: 0.85rem; box-shadow: 0 2px 6px rgba(0,0,0,0.03); appearance: none; -webkit-appearance: none; text-align: center; }
         .list-search-box { position: relative; margin-bottom: 15px; }
@@ -79,7 +74,6 @@
         .icon-btn.call { color: #34C759; background: #E8F5E9; }
         .icon-btn.map { color: var(--primary); background: #E3F2FD; }
 
-        /* メニュー・モーダル・その他 */
         .toggle-card { background: #fff; border-radius: 14px; margin-top: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); overflow: hidden; }
         .toggle-header { padding: 16px; font-weight: 800; font-size: 0.95rem; cursor: pointer; display: flex; justify-content: space-between; background: #fff; }
         .toggle-content { padding: 15px; display: none; border-top: 1px solid #f5f5f5; }
@@ -97,13 +91,19 @@
         .rep-checklist { max-height: 150px; overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 5px;}
         #map-placeholder-msg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(255,255,255,0.9); padding: 20px; border-radius: 16px; font-weight: bold; color: #555; pointer-events: none; text-align: center; width: 80%; }
 
-        .info-window-card { font-family: sans-serif; padding: 0 5px 5px 0; max-width: 240px; }
-        .info-title { font-weight: 800; font-size: 1.1rem; margin-bottom: 5px; line-height: 1.3; }
-        .info-meta { font-size: 0.8rem; color: #555; margin-bottom: 8px; background: #f5f5f5; padding: 4px 8px; border-radius: 6px; display: inline-block;}
-        .info-tel { font-weight: bold; color: var(--primary); font-size: 0.95rem; text-decoration: none; margin-bottom: 5px; display: block;}
-        .info-addr { font-size: 0.8rem; color: #666; margin-bottom: 8px; line-height: 1.4;}
-        .info-actions { display: flex; gap: 8px; margin-top: 10px; }
-        .info-btn { flex: 1; padding: 8px; border-radius: 6px; text-align: center; font-size: 0.8rem; font-weight: bold; text-decoration: none; cursor: pointer; border: none; }
+        /* ★ ポップアップ（InfoWindow）スタイル */
+        .info-window-container {
+            font-family: sans-serif; padding: 0 5px 5px 0; max-width: 260px; max-height: 250px; overflow-y: auto;
+        }
+        .info-window-card { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        .info-window-card:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+        
+        .info-title { font-weight: 800; font-size: 1.05rem; margin-bottom: 4px; line-height: 1.3; }
+        .info-meta { font-size: 0.75rem; color: #555; margin-bottom: 6px; background: #f5f5f5; padding: 3px 6px; border-radius: 4px; display: inline-block;}
+        .info-tel { font-weight: bold; color: var(--primary); font-size: 0.9rem; text-decoration: none; margin-bottom: 4px; display: block;}
+        .info-addr { font-size: 0.75rem; color: #666; margin-bottom: 6px; line-height: 1.4;}
+        .info-actions { display: flex; gap: 6px; margin-top: 8px; }
+        .info-btn { flex: 1; padding: 6px; border-radius: 6px; text-align: center; font-size: 0.75rem; font-weight: bold; text-decoration: none; cursor: pointer; border: none; }
         .btn-edit { background: #eee; color: #333; }
         .btn-route { background: #34C759; color: white; }
     </style>
@@ -130,7 +130,6 @@
                     <span class="slider"></span>
                 </label>
             </div>
-
             <button class="btn-current-loc" id="gpsBtn" onclick="toggleGPS()">◎</button>
         </div>
     </div>
@@ -198,18 +197,18 @@
     <div class="modal-content">
         <h3 style="text-align:center; margin-top:0;">設定</h3>
         <div class="settings-section">
-            <label class="settings-title">🔑 Google Maps APIキー</label>
+            <label style="display:block;margin-bottom:5px;font-weight:bold;">🔑 Google Maps APIキー</label>
             <div style="display:flex; gap:5px;">
                 <input type="password" id="apiKey" placeholder="AIzaSy..." style="margin-bottom:0; flex:1;">
                 <button onclick="saveKeyAndInit()" style="background:#333; color:#fff; border:none; border-radius:8px; padding:0 12px; cursor:pointer;">保存</button>
             </div>
         </div>
         <div class="settings-section">
-            <label class="settings-title">📍 青ピンにする担当者</label>
+            <label style="display:block;margin-bottom:5px;font-weight:bold;">📍 青ピンにする担当者</label>
             <div id="rep-checklist" class="rep-checklist"></div>
         </div>
         <div class="settings-section">
-            <label class="settings-title">💾 保存データ管理</label>
+            <label style="display:block;margin-bottom:5px;font-weight:bold;">💾 保存データ管理</label>
             <div style="font-size:0.8rem; margin-bottom:5px;">使用中のDB: <span id="current-db-name" style="font-weight:bold;"></span></div>
             <div id="storage-list" style="max-height:100px; overflow-y:auto; border:1px solid #eee;"></div>
         </div>
@@ -277,9 +276,10 @@
         else {
             allReps.forEach(name => {
                 const div = document.createElement('div');
-                div.className = 'rep-check-item';
+                // チェックボックスの行間を少し広げる
+                div.style.padding = "4px 0";
                 const isChecked = targetReps.includes(name) ? "checked" : "";
-                div.innerHTML = `<label><input type="checkbox" value="${name}" ${isChecked} onchange="toggleTargetRep(this)"> ${name}</label>`;
+                div.innerHTML = `<label style="display:flex;align-items:center;cursor:pointer;margin:0;"><input type="checkbox" value="${name}" ${isChecked} onchange="toggleTargetRep(this)" style="width:auto;margin-right:8px;"> ${name}</label>`;
                 repList.appendChild(div);
             });
         }
@@ -288,8 +288,9 @@
         for(let i=0; i<localStorage.length; i++) {
             const key = localStorage.key(i);
             if(key.startsWith('map_db')) {
-                const div = document.createElement('div'); div.className = 'data-list-item';
-                div.innerHTML = `<div class="data-key">${key}</div><button class="data-del-btn" onclick="forceDelete('${key}')">削除</button>`;
+                const div = document.createElement('div'); 
+                div.style.display="flex"; div.style.justifyContent="space-between"; div.style.padding="8px"; div.style.borderBottom="1px solid #eee";
+                div.innerHTML = `<div style="font-weight:bold;font-size:0.85rem;">${key}</div><button onclick="forceDelete('${key}')" style="background:#ffdddd;border:none;border-radius:4px;font-size:0.7rem;padding:4px 8px;cursor:pointer;">削除</button>`;
                 storageList.appendChild(div);
             }
         }
@@ -435,116 +436,117 @@
         } catch(e) { alert("エラー: " + e.message); } finally { btn.disabled = false; btn.innerText = "登録＆分析スタート"; }
     }
 
-    // ★ マップピン更新ロジックの改善 (ハイブリッド)
+    // ★ 重複ピン対応＆検索ハイブリッドロジック
     function updateMapPins(displayTargets) {
         if(!map || !AdvancedMarkerElement) return;
         markers.forEach(m => m.setMap(null)); markers = [];
         const bounds = new google.maps.LatLngBounds(); let hasPin = false;
         
-        // ★ 地図連動ON時は、リストの絞り込み(displayTargets)ではなく、
-        // 「地図範囲内の全データ」＋「検索ヒットしたデータ」を表示する
         let pinsToShow = displayTargets;
-
-        // 検索ワードがある場合、ハイライト用のIDリストを作成
         const searchInput = normalize(document.getElementById('searchInput').value);
         const hasSearch = searchInput.length > 0;
         
         if (mapSyncMode && map) {
-            // 地図連動中は、フィルタ(県/駅)だけ適用した全データから、地図中心に近いものを取得
-            // ※ここでは簡易的に「フィルタ通過済み全件」を対象にする（距離ソート済み前提）
             const fPref = document.getElementById('prefFilter').value;
             const fSt = document.getElementById('stationFilter').value;
-            
-            // フィルタ条件のみで再抽出（検索ワード無視）
             const mapBaseData = db.filter(d => {
                 if(fPref !== "ALL" && getPrefecture(d.address) !== fPref) return false;
                 if(fSt !== "ALL" && (d.station||"未特定") !== fSt) return false;
                 return true;
             });
-            
-            // 地図中心からの距離を計算してソート
             const center = map.getCenter();
             mapBaseData.forEach(d => {
                 if(d.lat && d.lng) d._dist = google.maps.geometry.spherical.computeDistanceBetween(center, new google.maps.LatLng(d.lat, d.lng));
                 else d._dist = 99999999;
             });
             mapBaseData.sort((a, b) => a._dist - b._dist);
-            
-            // 表示件数リミットまで取得
             const val = document.getElementById('limitSelect').value;
             const limit = (val === 'ALL') ? mapBaseData.length : parseInt(val);
             pinsToShow = mapBaseData.slice(0, limit);
         }
 
-        // ピンを作成
+        // ★ ピンのグルーピング処理 (座標が同じものをまとめる)
+        const grouped = {};
         pinsToShow.forEach(c => {
             if(c.lat && c.lng) {
-                // 検索ヒット判定
-                const isHit = hasSearch && normalize((c.r_code||"")+(c.name||"")+(c.address||"")+(c.note||"")+(c.rep_name||"")+(c.station||"")).includes(searchInput);
-                const isMe = targetReps.includes(c.rep_name);
-                
-                // 色とサイズ決定
-                let bgColor = isMe ? "#007AFF" : "#FF3B30";
-                let scale = 1.0;
-                let zIndex = 1;
-
-                if (hasSearch) {
-                    if (isHit) {
-                        scale = 1.5; // ヒットしたら大きく
-                        zIndex = 1000;
-                        bgColor = "#FFD60A"; // 黄色で強調
-                    } else {
-                        scale = 0.8; // ヒットしないものは小さく
-                        // opacity入れたいがAdvancedMarkerはstyleでやる
-                    }
-                } else if (isMe) {
-                    zIndex = 100;
-                }
-
-                const pinView = document.createElement("div");
-                pinView.style.backgroundColor = bgColor;
-                pinView.style.width = (16 * scale) + "px";
-                pinView.style.height = (16 * scale) + "px";
-                pinView.style.borderRadius = "50%";
-                pinView.style.border = "2px solid white";
-                pinView.style.boxShadow = "0 3px 6px rgba(0,0,0,0.3)";
-                if(hasSearch && !isHit) pinView.style.opacity = "0.6"; // 薄くする
-
-                const m = new AdvancedMarkerElement({ position: {lat:c.lat, lng:c.lng}, map: map, title: c.name, content: pinView, zIndex: zIndex });
-                
-                const noteHtml = c.note ? `<div style="background:#fff9c4;padding:4px;font-size:0.8rem;margin-bottom:5px;border-radius:4px;">📝 ${c.note}</div>` : "";
-                const telHtml = c.tel ? `<a href="tel:${c.tel}" class="info-tel">📞 ${c.tel}</a>` : "";
-                
-                m.addListener("click", () => {
-                    isPinClick = true; 
-                    const contentString = `
-                        <div class="info-window-card">
-                            <div class="info-title">${c.name}</div>
-                            <div class="info-meta">担当: ${c.rep_name||""} / R: ${c.r_code||"-"}</div>
-                            ${telHtml}
-                            <div class="info-addr">${c.address}</div>
-                            ${noteHtml}
-                            <div class="info-actions">
-                                <button class="info-btn btn-edit" onclick="openEdit('${c.id}')">✎ 編集</button>
-                                <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(c.address)}&travelmode=walking" target="_blank" class="info-btn btn-route">🚶 ルート</a>
-                            </div>
-                        </div>
-                    `;
-                    infoWindow.setContent(contentString);
-                    infoWindow.open(map, m);
-                });
-                markers.push(m); bounds.extend({lat:c.lat, lng:c.lng}); hasPin = true;
+                const key = `${c.lat.toFixed(6)},${c.lng.toFixed(6)}`;
+                if(!grouped[key]) grouped[key] = [];
+                grouped[key].push(c);
             }
         });
+
+        // グループごとにピン作成
+        Object.keys(grouped).forEach(key => {
+            const group = grouped[key];
+            const first = group[0]; // 代表座標
+            
+            // 色決定ロジック: グループ内に自分の担当があれば青、なければ赤。検索ヒットがあれば黄色。
+            let isMe = false;
+            let isHit = false;
+            group.forEach(c => {
+                if(targetReps.includes(c.rep_name)) isMe = true;
+                if(hasSearch && normalize((c.r_code||"")+(c.name||"")+(c.address||"")+(c.note||"")+(c.rep_name||"")+(c.station||"")).includes(searchInput)) isHit = true;
+            });
+
+            let bgColor = isMe ? "#007AFF" : "#FF3B30";
+            let scale = 1.0;
+            let zIndex = isMe ? 100 : 1;
+
+            if(hasSearch) {
+                if(isHit) {
+                    scale = 1.5; zIndex = 1000; bgColor = "#FFD60A";
+                } else {
+                    scale = 0.8; 
+                }
+            }
+
+            const pinView = document.createElement("div");
+            pinView.style.backgroundColor = bgColor;
+            pinView.style.width = (16 * scale) + "px";
+            pinView.style.height = (16 * scale) + "px";
+            pinView.style.borderRadius = "50%";
+            pinView.style.border = "2px solid white";
+            pinView.style.boxShadow = "0 3px 6px rgba(0,0,0,0.3)";
+            if(hasSearch && !isHit) pinView.style.opacity = "0.6";
+
+            const m = new AdvancedMarkerElement({ position: {lat:first.lat, lng:first.lng}, map: map, title: first.name, content: pinView, zIndex: zIndex });
+            
+            // ★ リスト表示用HTML生成
+            let listHtml = "";
+            group.forEach(c => {
+                const noteHtml = c.note ? `<div style="background:#fff9c4;padding:4px;font-size:0.75rem;margin-bottom:5px;border-radius:4px;">📝 ${c.note}</div>` : "";
+                const telHtml = c.tel ? `<a href="tel:${c.tel}" class="info-tel">📞 ${c.tel}</a>` : "";
+                listHtml += `
+                    <div class="info-window-card">
+                        <div class="info-title">${c.name}</div>
+                        <div class="info-meta">担当: ${c.rep_name||""} / R: ${c.r_code||"-"}</div>
+                        ${telHtml}
+                        <div class="info-addr">${c.address}</div>
+                        ${noteHtml}
+                        <div class="info-actions">
+                            <button class="info-btn btn-edit" onclick="openEdit('${c.id}')">✎ 編集</button>
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(c.address)}&travelmode=walking" target="_blank" class="info-btn btn-route">🚶 ルート</a>
+                        </div>
+                    </div>
+                `;
+            });
+
+            m.addListener("click", () => {
+                isPinClick = true; 
+                infoWindow.setContent(`<div class="info-window-container">${listHtml}</div>`);
+                infoWindow.open(map, m);
+            });
+            markers.push(m); bounds.extend({lat:first.lat, lng:first.lng}); hasPin = true;
+        });
         
-        // 追従モード中、または地図連動がオフの場合は、勝手にフィットさせない
         if(hasPin && !mapSyncMode && !watchId) map.fitBounds(bounds); 
     }
 
     function panToMap(lat, lng) { 
         if(map && lat && lng) { 
             map.setZoom(16); map.panTo({lat, lng}); 
-            // 該当するマーカーを探す（厳密には再描画前なので見つからないかもだが、連動ONなら再描画後に表示される）
+            const t = markers.find(m => Math.abs(m.position.lat-lat)<1e-6 && Math.abs(m.position.lng-lng)<1e-6); 
+            if(t) google.maps.event.trigger(t, 'click');
             if(window.innerWidth < 900) { document.querySelector('.left-section').scrollIntoView({behavior:'smooth', block:'start'}); }
         } 
     }
@@ -632,7 +634,6 @@
         document.getElementById('display-count-text').innerText = `表示中: ${Math.min(finalTargets.length, currentLimit)}`;
 
         const displayTargets = finalTargets.slice(0, currentLimit);
-        // ★ マップ更新関数へ（ここでハイブリッド表示処理）
         updateMapPins(displayTargets);
 
         displayTargets.forEach(c => {
