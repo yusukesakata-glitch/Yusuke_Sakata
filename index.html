@@ -12,7 +12,6 @@
         }
         body { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; background-color: var(--bg); color: var(--text-main); margin: 0; padding: 0; height: 100vh; overflow-y: auto; -webkit-tap-highlight-color: transparent; }
 
-        /* --- レイアウト --- */
         .app-container { display: flex; flex-direction: column; height: 100%; max-width: 1600px; margin: 0 auto; padding: 15px; box-sizing: border-box; gap: 15px; }
         @media (min-width: 900px) {
             body { overflow: hidden; }
@@ -27,23 +26,27 @@
             .right-section { padding-bottom: 100px; }
         }
 
-        /* --- UIパーツ --- */
         .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         h1 { font-size: 1.3rem; font-weight: 800; margin: 0; letter-spacing: -0.5px; }
         .btn-settings { background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); border: 1px solid rgba(0,0,0,0.1); padding: 8px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; cursor: pointer; color: var(--primary); display: flex; align-items: center; gap: 4px; }
 
-        /* 検索バー */
         .search-row { display: flex; gap: 10px; margin-bottom: 5px; }
         .place-search-box { flex: 1; display: flex; align-items: center; background: #fff; border-radius: 12px; padding: 2px 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid transparent; }
         .place-search-input { flex: 1; border: none; padding: 10px; font-size: 0.95rem; border-radius: 12px; outline: none; }
         .place-search-btn { background: none; border: none; font-size: 1.2rem; padding: 0 10px; color: var(--primary); cursor: pointer; }
 
-        /* マップ */
         #map-area { background: #E5E5EA; width: 100%; height: 100%; }
         #google-map-view { width: 100%; height: 100%; }
-        .btn-current-loc { position: absolute; bottom: 25px; right: 15px; z-index: 10; width: 50px; height: 50px; background: #fff; border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.15); border: none; font-size: 1.6rem; color: #555; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
-        .btn-current-loc.locked { background: var(--primary); color: white; box-shadow: 0 4px 20px rgba(0,122,255,0.4); }
-        .btn-current-loc.unlocked { background: #fff; color: var(--primary); border: 2px solid var(--primary); }
+        
+        .btn-current-loc { 
+            position: absolute; bottom: 120px; right: 10px; z-index: 10; 
+            width: 44px; height: 44px; background: #fff; border-radius: 50%; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2); border: none; 
+            font-size: 1.4rem; color: #555; cursor: pointer; 
+            display: flex; align-items: center; justify-content: center; 
+        }
+        .btn-current-loc.locked { background: var(--primary); color: white; }
+        .btn-current-loc.unlocked { color: var(--primary); border: 2px solid var(--primary); }
         
         .map-sync-wrapper { position: absolute; top: 10px; right: 10px; z-index: 10; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(8px); padding: 6px 12px; border-radius: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.75rem; color: var(--text-main); }
         .toggle-switch { position: relative; display: inline-block; width: 36px; height: 20px; }
@@ -53,7 +56,6 @@
         input:checked + .slider { background-color: var(--primary); }
         input:checked + .slider:before { transform: translateX(16px); }
 
-        /* リストエリア */
         .filter-area { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
         select { width: 100%; padding: 10px; border-radius: 10px; border: none; background: #fff; font-weight: 700; color: var(--primary); font-size: 0.85rem; box-shadow: 0 2px 6px rgba(0,0,0,0.03); appearance: none; -webkit-appearance: none; text-align: center; }
         .list-search-box { position: relative; margin-bottom: 15px; }
@@ -71,18 +73,28 @@
 
         .customer-item { background: #fff; padding: 16px; border-radius: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-start; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
         .info-main { font-weight: 800; font-size: 1.05rem; margin-bottom: 4px; color: var(--text-main); line-height: 1.3;}
-        .info-sub { font-size: 0.8rem; color: #666; margin-bottom: 2px; }
+        .info-sub { font-size: 0.8rem; color: #666; margin-bottom: 3px; display:flex; align-items:center; gap:5px; }
         .tag { background: #F2F2F7; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; margin-right: 5px; color: #555; }
+        
         .action-area { display: flex; flex-direction: column; gap: 8px; margin-left: 10px; }
         .icon-btn { width: 40px; height: 40px; border-radius: 50%; background: #F9F9F9; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1.1rem; transition: transform 0.1s; }
         .icon-btn:active { transform: scale(0.9); }
         .icon-btn.call { color: #34C759; background: #E8F5E9; }
         .icon-btn.map { color: var(--primary); background: #E3F2FD; }
 
-        /* メニュー・モーダル・その他 */
+        .btn-copy { font-size: 0.7rem; background: #eee; border: none; padding: 2px 6px; border-radius: 4px; cursor: pointer; color: #666; font-weight: bold;}
+        .btn-copy:active { background: #ccc; }
+
+        /* チップスタイル */
+        .quick-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; }
+        .chip { font-size: 0.75rem; background: #f0f0f5; padding: 4px 10px; border-radius: 15px; cursor: pointer; border: 1px solid #ddd; }
+        .chip:active { background: var(--primary); color: white; }
+        .chip-del { color: red; font-weight: bold; margin-left: 5px; cursor: pointer; }
+
         .toggle-card { background: #fff; border-radius: 14px; margin-top: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); overflow: hidden; }
         .toggle-header { padding: 16px; font-weight: 800; font-size: 0.95rem; cursor: pointer; display: flex; justify-content: space-between; background: #fff; }
         .toggle-content { padding: 15px; display: none; border-top: 1px solid #f5f5f5; }
+        
         label { display: block; font-size: 0.75rem; font-weight: bold; color: #888; margin-bottom: 5px; margin-top: 15px; }
         input[type="text"], textarea { width: 100%; padding: 12px; border: 1px solid #eee; background: #FAFAFA; border-radius: 10px; box-sizing: border-box; font-size: 16px; }
         .btn-main { width: 100%; padding: 14px; background: var(--primary); color: #fff; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; margin-top: 15px; }
@@ -97,9 +109,8 @@
         .rep-checklist { max-height: 150px; overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 5px;}
         #map-placeholder-msg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(255,255,255,0.95); padding: 20px; border-radius: 16px; font-weight: bold; color: #333; pointer-events: none; text-align: center; width: 80%; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
 
-        /* ポップアップ */
         .info-window-container { font-family: sans-serif; padding: 0 5px 5px 0; max-width: 260px; max-height: 250px; overflow-y: auto; }
-        .info-window-card { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        .info-window-card { margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
         .info-window-card:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
         .info-title { font-weight: 800; font-size: 1.05rem; margin-bottom: 4px; line-height: 1.3; }
         .info-meta { font-size: 0.75rem; color: #555; margin-bottom: 6px; background: #f5f5f5; padding: 3px 6px; border-radius: 4px; display: inline-block;}
@@ -125,7 +136,6 @@
         <div class="map-wrapper">
             <div id="google-map-view"></div>
             <div id="map-placeholder-msg">地図を準備中...</div>
-            
             <div class="map-sync-wrapper">
                 <span>連動</span>
                 <label class="toggle-switch">
@@ -150,21 +160,18 @@
         
         <div class="list-search-box">
             <span class="list-search-icon">🔍</span>
-            <input type="text" id="searchInput" placeholder="リスト内検索 (名前, Rコード...)" oninput="resetAndRender()">
+            <input type="text" id="searchInput" placeholder="名前, Rコードなどで検索..." oninput="resetAndRender()">
         </div>
 
         <div id="stats-area">
             <div class="stats-header">
                 <div class="stats-total" id="stats-total-text">-- 件</div>
-                <div style="display:flex; align-items:center; gap:5px; font-size:0.8rem; color:#666;">
-                    <span>表示数:</span>
-                    <select id="limitSelect" class="limit-select" onchange="changeLimit()">
-                        <option value="100">100</option>
-                        <option value="300">300</option>
-                        <option value="500">500</option>
-                        <option value="ALL">全件</option>
-                    </select>
-                </div>
+                <select id="limitSelect" class="limit-select" onchange="changeLimit()">
+                    <option value="100">表示: 100</option>
+                    <option value="300">表示: 300</option>
+                    <option value="500">表示: 500</option>
+                    <option value="ALL">表示: 全件</option>
+                </select>
             </div>
             <div id="display-count-text" style="font-size:0.75rem; color:#888; margin-bottom:5px;"></div>
             <div class="stats-grid" id="stats-detail"></div>
@@ -211,6 +218,14 @@
             <div id="rep-checklist" class="rep-checklist"></div>
         </div>
         <div class="settings-section">
+            <label style="display:block;margin-bottom:5px;font-weight:bold;">📝 定型文チップ設定</label>
+            <div style="display:flex; gap:5px; margin-bottom:8px;">
+                <input type="text" id="newChipInput" placeholder="例: 再訪予定" style="margin-bottom:0;">
+                <button onclick="addChip()" style="background:var(--primary); color:#fff; border:none; border-radius:8px; padding:0 12px; white-space:nowrap;">追加</button>
+            </div>
+            <div id="settings-chip-list" class="quick-chips"></div>
+        </div>
+        <div class="settings-section">
             <label style="display:block;margin-bottom:5px;font-weight:bold;">💾 保存データ管理</label>
             <div style="font-size:0.8rem; margin-bottom:5px;">使用中のDB: <span id="current-db-name" style="font-weight:bold;"></span></div>
             <div id="storage-list" style="max-height:100px; overflow-y:auto; border:1px solid #eee;"></div>
@@ -223,7 +238,10 @@
     <div class="modal-content">
         <h3 style="text-align:center; margin-top:0;">編集</h3>
         <input type="hidden" id="edit-id"><input type="hidden" id="orig-addr">
-        <label>備考</label><textarea id="edit-note" style="height:60px;"></textarea>
+        <label>備考</label>
+        <textarea id="edit-note" style="height:60px;"></textarea>
+        <div id="edit-chip-area" class="quick-chips"></div>
+        
         <label>担当</label><input type="text" id="edit-rep">
         <label>Rコード</label><input type="text" id="edit-r">
         <label>名称</label><input type="text" id="edit-name">
@@ -247,12 +265,13 @@
     let myLocationMarker = null; 
     let watchId = null;
     let isTrackingLocked = false;
+    // ★ チップ初期値
+    let quickChips = ["不在", "移転", "商談中", "完了"];
     
     let db = [];
-    let map, geocoder, Place, AdvancedMarkerElement;
+    let map, geocoder, AdvancedMarkerElement;
     let markers = [];
     let infoWindow; 
-    const PREF_ORDER = ["北海道","青森県","岩手県","宮城県","秋田県","山形県","福島県","茨城県","栃木県","群馬県","埼玉県","千葉県","東京都","神奈川県","新潟県","富山県","石川県","福井県","山梨県","長野県","岐阜県","静岡県","愛知県","三重県","滋賀県","京都府","大阪府","兵庫県","奈良県","和歌山県","鳥取県","島根県","岡山県","広島県","山口県","徳島県","香川県","愛媛県","高知県","福岡県","佐賀県","長崎県","熊本県","大分県","宮崎県","鹿児島県","沖縄県"];
 
     function toggleInput() { const el=document.getElementById('input-area'); el.style.display=el.style.display==='block'?'none':'block'; }
     function normalize(s) { return (s||"").replace(/[Ａ-Ｚａ-ｚ０-９]/g, c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0)).toLowerCase().replace(/\s+/g,""); }
@@ -262,51 +281,77 @@
         const k = localStorage.getItem('map_apiKey');
         const d = localStorage.getItem(DB_NAME);
         const tr = localStorage.getItem('map_target_reps_json');
+        const qc = localStorage.getItem('map_quick_chips_json'); // チップ読込
+        
         if(tr) { try { targetReps = JSON.parse(tr); } catch(e) { targetReps=[]; } }
+        if(qc) { try { quickChips = JSON.parse(qc); } catch(e) {} }
         
-        // ★ 自動復旧ロジック
         if(d) { try { db = JSON.parse(d); populateFilters(); resetAndRender(); } catch(e){ db=[]; } }
-        
         if(k) {
             document.getElementById('apiKey').value = k;
             document.getElementById('map-placeholder-msg').innerText = "🔑 保存されたキーで地図を起動中...";
-            // すぐに地図起動を試みる
             initSystem(k);
         } else {
             document.getElementById('map-placeholder-msg').innerHTML = "APIキーを設定すると<br>地図が表示されます";
         }
-        
         document.getElementById('current-db-name').innerText = DB_NAME;
     };
 
     function openSettings() {
         const modal = document.getElementById('settingsModal');
+        // 担当者リスト
         const repList = document.getElementById('rep-checklist');
         repList.innerHTML = "";
         const allReps = [...new Set(db.map(d => d.rep_name || "担当なし"))].sort();
-        
-        if(allReps.length === 0) repList.innerHTML = "<div style='color:#888;'>データなし</div>";
-        else {
-            allReps.forEach(name => {
-                const div = document.createElement('div');
-                div.style.padding = "4px 0";
-                const isChecked = targetReps.includes(name) ? "checked" : "";
-                div.innerHTML = `<label style="display:flex;align-items:center;cursor:pointer;margin:0;"><input type="checkbox" value="${name}" ${isChecked} onchange="toggleTargetRep(this)" style="width:auto;margin-right:8px;"> ${name}</label>`;
-                repList.appendChild(div);
-            });
-        }
-        
+        allReps.forEach(name => {
+            const div = document.createElement('div'); div.style.padding = "4px 0";
+            const isChecked = targetReps.includes(name) ? "checked" : "";
+            div.innerHTML = `<label style="display:flex;align-items:center;cursor:pointer;margin:0;"><input type="checkbox" value="${name}" ${isChecked} onchange="toggleTargetRep(this)" style="width:auto;margin-right:8px;"> ${name}</label>`;
+            repList.appendChild(div);
+        });
+        // チップ設定リスト
+        renderChipsSettings();
+        // 保存データリスト
         const storageList = document.getElementById('storage-list'); storageList.innerHTML = "";
         for(let i=0; i<localStorage.length; i++) {
             const key = localStorage.key(i);
             if(key.startsWith('map_db')) {
-                const div = document.createElement('div'); 
-                div.style.display="flex"; div.style.justifyContent="space-between"; div.style.padding="8px"; div.style.borderBottom="1px solid #eee";
+                const div = document.createElement('div'); div.style.display="flex"; div.style.justifyContent="space-between"; div.style.padding="8px"; div.style.borderBottom="1px solid #eee";
                 div.innerHTML = `<div style="font-weight:bold;font-size:0.85rem;">${key}</div><button onclick="forceDelete('${key}')" style="background:#ffdddd;border:none;border-radius:4px;font-size:0.7rem;padding:4px 8px;cursor:pointer;">削除</button>`;
                 storageList.appendChild(div);
             }
         }
         modal.style.display = 'flex';
+    }
+
+    // ★ チップ管理関数
+    function renderChipsSettings() {
+        const list = document.getElementById('settings-chip-list');
+        list.innerHTML = "";
+        quickChips.forEach((c, idx) => {
+            const span = document.createElement('span'); span.className = 'chip';
+            span.innerHTML = `${c} <span class="chip-del" onclick="deleteChip(${idx})">×</span>`;
+            // 設定画面ではクリックしても入力しない（削除のみ）
+            span.onclick = (e) => { if(e.target.className !== 'chip-del') e.stopPropagation(); }; 
+            list.appendChild(span);
+        });
+    }
+    function addChip() {
+        const input = document.getElementById('newChipInput');
+        const val = input.value.trim();
+        if(val) {
+            quickChips.push(val);
+            localStorage.setItem('map_quick_chips_json', JSON.stringify(quickChips));
+            input.value = "";
+            renderChipsSettings();
+        }
+    }
+    function deleteChip(idx) {
+        if(confirm("削除しますか？")) {
+            quickChips.splice(idx, 1);
+            localStorage.setItem('map_quick_chips_json', JSON.stringify(quickChips));
+            renderChipsSettings();
+        }
     }
 
     function toggleTargetRep(checkbox) {
@@ -319,137 +364,85 @@
 
     function forceDelete(key) { if(confirm(`本当に「${key}」を削除しますか？`)) { localStorage.removeItem(key); openSettings(); if(key === DB_NAME) { db = []; resetAndRender(); updateMapPins([]); } alert("削除しました"); } }
 
-    async function saveKeyAndInit() { const k=document.getElementById('apiKey').value; if(!k)return alert("APIキーを入れて"); localStorage.setItem('map_apiKey', k); await initSystem(k); alert("保存しました"); }
+    async function saveKeyAndInit() { const k=document.getElementById('apiKey').value; if(!k)return alert("キーを入力"); localStorage.setItem('map_apiKey', k); await initSystem(k); alert("保存しました"); }
     
     async function initSystem(key) {
         if(window.google && map) return;
-        await new Promise((res,rej)=>{ if(document.querySelector('script[src*="maps.googleapis.com"]'))return res(); const s=document.createElement('script'); s.src=`https://maps.googleapis.com/maps/api/js?key=${key}&loading=async&libraries=places,geocoding,geometry`; s.async=true; s.onload=res; s.onerror=rej; document.head.appendChild(s); });
+        await new Promise((res,rej)=>{ const s=document.createElement('script'); s.src=`https://maps.googleapis.com/maps/api/js?key=${key}&loading=async&libraries=places,geocoding,geometry,marker`; s.async=true; s.onload=res; s.onerror=rej; document.head.appendChild(s); });
         try {
-            const { Map } = await google.maps.importLibrary("maps"); const { Geocoder } = await google.maps.importLibrary("geocoding");
-            const { Place: PlaceLib } = await google.maps.importLibrary("places"); const { AdvancedMarkerElement: MarkerLib } = await google.maps.importLibrary("marker");
-            geocoder = new Geocoder(); Place = PlaceLib; AdvancedMarkerElement = MarkerLib;
-            
+            const { Map } = await google.maps.importLibrary("maps"); 
+            const { Geocoder } = await google.maps.importLibrary("geocoding");
+            const { AdvancedMarkerElement: AM } = await google.maps.importLibrary("marker");
+            geocoder = new Geocoder(); AdvancedMarkerElement = AM;
             const div = document.getElementById('google-map-view');
-            if(!map) { 
-                map = new Map(div, { center:{lat:35.68, lng:139.76}, zoom:13, mapId: "DEMO_MAP_ID", mapTypeControl: false, streetViewControl: false, fullscreenControl: false }); 
-                infoWindow = new google.maps.InfoWindow(); 
-                
-                map.addListener('idle', () => { 
-                    if(isPinClick) { isPinClick = false; return; }
-                    if(mapSyncMode) resetAndRender(); 
-                });
-
-                map.addListener('dragstart', () => {
-                    if (watchId) {
-                        isTrackingLocked = false;
-                        updateGpsBtnState();
-                    }
-                });
-            }
+            map = new Map(div, { center:{lat:35.68, lng:139.76}, zoom:13, mapId: "DEMO_MAP_ID", mapTypeControl: false, streetViewControl: false }); 
+            infoWindow = new google.maps.InfoWindow(); 
+            map.addListener('idle', () => { if(!isPinClick && mapSyncMode) resetAndRender(); isPinClick=false; });
+            map.addListener('dragstart', () => { if(watchId) { isTrackingLocked=false; updateGpsBtnState(); } });
             document.getElementById('map-placeholder-msg').style.display='none';
             if(db.length > 0) render(); 
-        } catch(e) { 
-            // エラー時はメッセージを戻す
-            document.getElementById('map-placeholder-msg').innerText = "APIキーのエラーまたは読込失敗";
-            log("初期化エラー: "+e); 
-        }
+        } catch(e) { log("初期化失敗: "+e); }
     }
 
     function updateGpsBtnState() {
         const btn = document.getElementById('gpsBtn');
         btn.className = 'btn-current-loc'; 
-        if (!watchId) { } 
-        else if (isTrackingLocked) { btn.classList.add('locked'); } 
-        else { btn.classList.add('unlocked'); }
+        if (!watchId) {} else if (isTrackingLocked) { btn.classList.add('locked'); } else { btn.classList.add('unlocked'); }
     }
 
     function toggleGPS() {
-        if (!navigator.geolocation) return alert("お使いの端末では位置情報が使えません");
-        if (!map) return alert("まずはAPIキーを設定してください");
-
         if (watchId) {
-            if (isTrackingLocked) {
-                navigator.geolocation.clearWatch(watchId);
-                watchId = null; isTrackingLocked = false;
-                if(myLocationMarker) { myLocationMarker.setMap(null); myLocationMarker = null; }
-            } else {
-                isTrackingLocked = true;
-                if(myLocationMarker) map.panTo(myLocationMarker.position);
-            }
+            if (isTrackingLocked) { navigator.geolocation.clearWatch(watchId); watchId = null; isTrackingLocked = false; if(myLocationMarker) { myLocationMarker.setMap(null); myLocationMarker = null; } } 
+            else { isTrackingLocked = true; if(myLocationMarker) map.panTo(myLocationMarker.position); }
         } else {
             isTrackingLocked = true;
             watchId = navigator.geolocation.watchPosition((pos) => {
                 const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-                if (myLocationMarker) {
-                    myLocationMarker.position = loc;
-                } else {
-                    const pin = document.createElement("div");
-                    pin.style.width = "18px"; pin.style.height = "18px";
-                    pin.style.backgroundColor = "#4285F4"; 
-                    pin.style.border = "3px solid white"; pin.style.borderRadius = "50%";
-                    pin.style.boxShadow = "0 0 8px rgba(66, 133, 244, 0.6)";
-                    myLocationMarker = new AdvancedMarkerElement({ map: map, position: loc, content: pin, title: "現在地", zIndex: 999 });
+                if (myLocationMarker) { myLocationMarker.position = loc; } 
+                else {
+                    const pin = document.createElement("div"); pin.style.width="18px"; pin.style.height="18px"; pin.style.backgroundColor="#4285F4"; pin.style.border="3px solid white"; pin.style.borderRadius="50%";
+                    myLocationMarker = new AdvancedMarkerElement({ map: map, position: loc, content: pin, zIndex: 999 });
                 }
                 if (isTrackingLocked) map.panTo(loc);
                 if (mapSyncMode) resetAndRender();
-            }, (err) => {
-                alert("位置情報を取得できませんでした");
-                navigator.geolocation.clearWatch(watchId); watchId = null; updateGpsBtnState();
-            }, { enableHighAccuracy: true });
+            }, (err) => { alert("位置失敗"); }, { enableHighAccuracy: true });
         }
         updateGpsBtnState();
     }
 
     function searchMapLocation() {
         const input = document.getElementById('mapJumpInput').value;
-        if(!input) return;
-        if(!geocoder || !map) return alert("APIキーを設定してください");
+        if(!input || !geocoder) return;
         geocoder.geocode({ address: input }, (results, status) => {
-            if (status === 'OK') {
-                map.setCenter(results[0].geometry.location);
-                map.setZoom(14); 
-                if(mapSyncMode) resetAndRender();
-            } else { alert('見つかりませんでした'); }
+            if (status === 'OK') { map.setCenter(results[0].geometry.location); map.setZoom(14); if(mapSyncMode) resetAndRender(); }
         });
     }
+
+    function copyToClipboard(text) { navigator.clipboard.writeText(text).then(() => { alert("コピー: " + text); }); }
+    function addNote(text) { const area = document.getElementById('edit-note'); area.value = (area.value ? area.value + " " : "") + text; }
 
     async function processData() {
         const key = document.getElementById('apiKey').value.trim(); const csv = document.getElementById('csvInput').value.trim(); 
         const newRepName = document.getElementById('repName').value.trim();
-        if(!key && !map) return alert('APIキーを入力してください'); 
-        if(!csv) return alert('リストを入力してください');
-        if(key) localStorage.setItem('map_apiKey', key);
-        
+        if(!csv) return alert('リストを貼ってください');
         const btn = document.getElementById('runBtn'); btn.disabled = true; btn.innerText = "処理中..."; 
         try {
             await initSystem(localStorage.getItem('map_apiKey'));
             const lines = csv.split('\n'); let count = 0;
-            for(let i=0; i<lines.length; i++) {
-                const line = lines[i].trim(); if(!line) continue;
-                const cols = line.split(/\t/).map(s=>s.trim());
-                let r = cols[0]||"", corp = cols[1]||"", store = cols[2]||"", addr = cols[3]||"", tel = cols[4]||"";
-                let fullName = (corp + " " + store).trim(); if(!fullName) fullName = "名称不明";
-                let cleanAddr = addr.replace(/[\(（](未特定|不明|場所不明|検索エラー).*?[\)）]/g, "").trim();
-                if(!cleanAddr) continue;
-                
-                let existIdx = -1; if(r) existIdx = db.findIndex(d => d.r_code === r);
+            for(let line of lines) {
+                const cols = line.trim().split(/\t/).map(s=>s.trim());
+                if(cols.length < 4) continue;
+                let r=cols[0], name=(cols[1]+" "+cols[2]).trim(), addr=cols[3], tel=cols[4]||"";
                 try {
-                    const coords = await new Promise((resolve, reject) => {
-                        geocoder.geocode({ address: cleanAddr }, (results, status) => {
-                            if (status === 'OK') resolve({lat: results[0].geometry.location.lat(), lng: results[0].geometry.location.lng()});
-                            else reject(status);
-                        });
-                    });
-                    const newData = { id: Date.now().toString(36)+Math.random(), r_code: r, name: fullName, address: addr, tel: tel, lat: coords.lat, lng: coords.lng, rep_name: newRepName, time:"", note:"" };
-                    if(existIdx !== -1) db[existIdx] = newData; else db.push(newData);
-                    count++;
-                    log(`登録中: ${count}件 - ${fullName}`);
-                } catch(e) { log(`失敗: ${fullName}`); }
-                await new Promise(r => setTimeout(r, 400)); 
+                    const coords = await new Promise((res, rej) => geocoder.geocode({ address: addr }, (r, s) => s==='OK'?res({lat: r[0].geometry.location.lat(), lng: r[0].geometry.location.lng()}):rej(s)));
+                    db.push({ id: Math.random().toString(36).substr(2, 9), r_code: r, name: name, address: addr, tel: tel, lat: coords.lat, lng: coords.lng, rep_name: newRepName, note: "" });
+                    count++; log(`進行中... ${count}件`);
+                } catch(e) {}
+                await new Promise(r => setTimeout(r, 400));
             }
             saveDB(); populateFilters(); resetAndRender(); 
-            document.getElementById('csvInput').value = ""; log("完了"); alert(`${count}件 完了しました`);
-        } catch(e) { alert("エラー: " + e.message); } finally { btn.disabled = false; btn.innerText = "登録＆分析スタート"; }
+            alert(`${count}件 完了`);
+        } finally { btn.disabled = false; btn.innerText = "登録＆分析スタート"; }
     }
 
     function updateMapPins(displayTargets) {
@@ -457,10 +450,10 @@
         markers.forEach(m => m.setMap(null)); markers = [];
         const bounds = new google.maps.LatLngBounds(); let hasPin = false;
         
-        let pinsToShow = displayTargets;
         const searchInput = normalize(document.getElementById('searchInput').value);
         const hasSearch = searchInput.length > 0;
         
+        let pinsToShow = displayTargets;
         if (mapSyncMode && map) {
             const fPref = document.getElementById('prefFilter').value;
             const fSt = document.getElementById('stationFilter').value;
@@ -470,10 +463,7 @@
                 return true;
             });
             const center = map.getCenter();
-            mapBaseData.forEach(d => {
-                if(d.lat && d.lng) d._dist = google.maps.geometry.spherical.computeDistanceBetween(center, new google.maps.LatLng(d.lat, d.lng));
-                else d._dist = 99999999;
-            });
+            mapBaseData.forEach(d => d._dist = google.maps.geometry.spherical.computeDistanceBetween(center, new google.maps.LatLng(d.lat, d.lng)));
             mapBaseData.sort((a, b) => a._dist - b._dist);
             const val = document.getElementById('limitSelect').value;
             const limit = (val === 'ALL') ? mapBaseData.length : parseInt(val);
@@ -484,220 +474,136 @@
         pinsToShow.forEach(c => {
             if(c.lat && c.lng) {
                 const key = `${c.lat.toFixed(6)},${c.lng.toFixed(6)}`;
-                if(!grouped[key]) grouped[key] = [];
-                grouped[key].push(c);
+                if(!grouped[key]) grouped[key] = []; grouped[key].push(c);
             }
         });
 
         Object.keys(grouped).forEach(key => {
             const group = grouped[key];
-            const first = group[0]; 
+            const first = group[0];
+            let isMe = group.some(c => targetReps.includes(c.rep_name));
+            let isHit = group.some(c => hasSearch && normalize(c.name + c.r_code).includes(searchInput));
             
-            let isMe = false;
-            let isHit = false;
-            group.forEach(c => {
-                if(targetReps.includes(c.rep_name)) isMe = true;
-                if(hasSearch && normalize((c.r_code||"")+(c.name||"")+(c.address||"")+(c.note||"")+(c.rep_name||"")+(c.station||"")).includes(searchInput)) isHit = true;
-            });
-
-            let bgColor = isMe ? "#007AFF" : "#FF3B30";
-            let scale = 1.0;
-            let zIndex = isMe ? 100 : 1;
-
-            if(hasSearch) {
-                if(isHit) {
-                    scale = 1.5; zIndex = 1000; bgColor = "#FFD60A";
-                } else {
-                    scale = 0.8; 
-                }
-            }
-
             const pinView = document.createElement("div");
-            pinView.style.backgroundColor = bgColor;
-            pinView.style.width = (16 * scale) + "px";
-            pinView.style.height = (16 * scale) + "px";
-            pinView.style.borderRadius = "50%";
-            pinView.style.border = "2px solid white";
-            pinView.style.boxShadow = "0 3px 6px rgba(0,0,0,0.3)";
+            pinView.style.width = isHit ? "22px" : "16px";
+            pinView.style.height = pinView.style.width;
+            pinView.style.backgroundColor = isHit ? "#FFD60A" : (isMe ? "#007AFF" : "#FF3B30");
+            pinView.style.borderRadius = "50%"; pinView.style.border = "2px solid white"; pinView.style.boxShadow = "0 2px 5px rgba(0,0,0,0.2)";
             if(hasSearch && !isHit) pinView.style.opacity = "0.6";
 
-            const m = new AdvancedMarkerElement({ position: {lat:first.lat, lng:first.lng}, map: map, title: first.name, content: pinView, zIndex: zIndex });
+            const m = new AdvancedMarkerElement({ position: {lat:first.lat, lng:first.lng}, map: map, content: pinView, zIndex: isHit ? 1000 : (isMe ? 100 : 1) });
             
-            let listHtml = "";
-            group.forEach(c => {
-                const noteHtml = c.note ? `<div style="background:#fff9c4;padding:4px;font-size:0.75rem;margin-bottom:5px;border-radius:4px;">📝 ${c.note}</div>` : "";
-                const telHtml = c.tel ? `<a href="tel:${c.tel}" class="info-tel">📞 ${c.tel}</a>` : "";
-                listHtml += `
-                    <div class="info-window-card">
-                        <div class="info-title">${c.name}</div>
-                        <div class="info-meta">担当: ${c.rep_name||""} / R: ${c.r_code||"-"}</div>
-                        ${telHtml}
-                        <div class="info-addr">${c.address}</div>
-                        ${noteHtml}
-                        <div class="info-actions">
-                            <button class="info-btn btn-edit" onclick="openEdit('${c.id}')">✎ 編集</button>
-                            <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(c.address)}&travelmode=walking" target="_blank" class="info-btn btn-route">🚶 ルート</a>
-                        </div>
-                    </div>
-                `;
-            });
-
             m.addListener("click", () => {
-                isPinClick = true; 
-                infoWindow.setContent(`<div class="info-window-container">${listHtml}</div>`);
-                infoWindow.open(map, m);
+                isPinClick = true;
+                let html = '<div class="info-window-container">';
+                group.forEach(c => {
+                    const telBtn = c.tel ? `<a href="tel:${c.tel}" class="info-tel">📞 ${c.tel}</a>` : "";
+                    const note = c.note ? `<div style="background:#fff9c4;padding:3px;font-size:0.75rem;margin-bottom:3px;">${c.note}</div>` : "";
+                    html += `<div class="info-window-card"><div class="info-title">${c.name}</div><div class="info-meta">${c.rep_name} / ${c.r_code}</div>${telBtn}<div class="info-addr">${c.address}</div>${note}<button class="info-btn btn-edit" onclick="openEdit('${c.id}')">編集</button></div>`;
+                });
+                html += '</div>';
+                infoWindow.setContent(html); infoWindow.open(map, m);
             });
-            markers.push(m); bounds.extend({lat:first.lat, lng:first.lng}); hasPin = true;
+            markers.push(m); bounds.extend(m.position); hasPin = true;
         });
-        
-        if(hasPin && !mapSyncMode && !watchId) map.fitBounds(bounds); 
+        if(hasPin && !mapSyncMode && !watchId) map.fitBounds(bounds);
     }
 
-    function panToMap(lat, lng) { 
-        if(map && lat && lng) { 
-            map.setZoom(16); map.panTo({lat, lng}); 
-            const t = markers.find(m => Math.abs(m.position.lat-lat)<1e-6 && Math.abs(m.position.lng-lng)<1e-6); 
-            if(t) google.maps.event.trigger(t, 'click');
-            if(window.innerWidth < 900) { document.querySelector('.left-section').scrollIntoView({behavior:'smooth', block:'start'}); }
-        } 
-    }
-
-    function getPrefecture(a) { if(!a)return"その他"; const m=a.match(/(...??[都道府県])/); return m?m[1]:"その他"; }
+    function getPrefecture(a) { const m=a.match(/(...??[都道府県])/); return m?m[1]:"その他"; }
     function populateFilters() {
         const pSel=document.getElementById('prefFilter'), sSel=document.getElementById('stationFilter');
-        pSel.innerHTML='<option value="ALL">都道府県: 全て</option>'; sSel.innerHTML='<option value="ALL">最寄り駅: 全て</option>'; 
-        [...new Set(db.map(x=>getPrefecture(x.address)))].sort((a,b)=>PREF_ORDER.indexOf(a)-PREF_ORDER.indexOf(b)).forEach(p=>{const o=document.createElement('option');o.value=p;o.innerText=p;pSel.appendChild(o)});
-        updateStationFilter();
-    }
-    function updateStationFilter() {
-        const p=document.getElementById('prefFilter').value, sSel=document.getElementById('stationFilter');
-        sSel.innerHTML='<option value="ALL">最寄り駅: 全て</option>';
-        const t = (p==="ALL") ? db : db.filter(d=>getPrefecture(d.address)===p);
-        [...new Set(t.map(x=>x.station||"未特定"))].sort().forEach(s=>{const o=document.createElement('option');o.value=s;o.innerText=s;sSel.appendChild(o)});
-    }
-
-    function changeLimit() {
-        const val = document.getElementById('limitSelect').value;
-        if(val === 'ALL') {
-            if(!confirm("【注意】\n全件表示は重くなります。続行しますか？")) {
-                document.getElementById('limitSelect').value = "100"; return;
-            }
-            currentLimit = db.length; 
-        } else { currentLimit = parseInt(val); }
-        render();
+        pSel.innerHTML='<option value="ALL">都道府県: 全て</option>';
+        [...new Set(db.map(x=>getPrefecture(x.address)))].sort().forEach(p=>{const o=document.createElement('option');o.value=p;o.innerText=p;pSel.appendChild(o)});
     }
 
     function toggleMapSync() { mapSyncMode = document.getElementById('mapSyncToggle').checked; if(mapSyncMode) resetAndRender(); }
-    function resetAndRender() { 
-        const val = document.getElementById('limitSelect').value;
-        currentLimit = (val === 'ALL') ? db.length : parseInt(val);
-        render(); 
-    }
-    function loadMore() { 
-        const val = document.getElementById('limitSelect').value;
-        const step = (val === 'ALL') ? 100 : parseInt(val);
-        currentLimit += step; 
-        render(); 
-    }
-    function toggleRep(name) { if(activeReps.has(name)) activeReps.delete(name); else activeReps.add(name); resetAndRender(); }
+    function resetAndRender() { render(); }
+    function changeLimit() { currentLimit = document.getElementById('limitSelect').value === 'ALL' ? db.length : parseInt(document.getElementById('limitSelect').value); render(); }
+    function toggleRep(name) { if(activeReps.has(name)) activeReps.delete(name); else activeReps.add(name); render(); }
 
     function render() {
         const area = document.getElementById('result-area'); area.innerHTML = "";
         const fPref = document.getElementById('prefFilter').value;
-        const fSt = document.getElementById('stationFilter').value;
         const q = normalize(document.getElementById('searchInput').value);
 
         let filtered = db.filter(d => {
             if(fPref !== "ALL" && getPrefecture(d.address) !== fPref) return false;
-            if(fSt !== "ALL" && (d.station||"未特定") !== fSt) return false;
             if(!q) return true;
-            return normalize((d.r_code||"")+(d.name||"")+(d.address||"")+(d.note||"")+(d.rep_name||"")+(d.station||"")).includes(q);
+            return normalize(d.name + d.r_code + d.rep_name + d.address).includes(q);
         });
 
         if(mapSyncMode && map) {
             const center = map.getCenter();
-            filtered.forEach(d => {
-                if(d.lat && d.lng) d._dist = google.maps.geometry.spherical.computeDistanceBetween(center, new google.maps.LatLng(d.lat, d.lng));
-                else d._dist = 99999999;
-            });
+            filtered.forEach(d => d._dist = google.maps.geometry.spherical.computeDistanceBetween(center, new google.maps.LatLng(d.lat, d.lng)));
             filtered.sort((a, b) => a._dist - b._dist);
-        } else {
-            filtered.sort((a, b) => (a.rep_name||"").localeCompare(b.rep_name||"", 'ja'));
         }
 
-        const statsArea = document.getElementById('stats-area');
-        const detailBox = document.getElementById('stats-detail');
-        const counts = {};
-        filtered.forEach(d => { const r = d.rep_name || "担当なし"; counts[r] = (counts[r] || 0) + 1; });
-
-        detailBox.innerHTML = "";
-        Object.keys(counts).sort().forEach(key => { 
-            const isActive = activeReps.has(key) ? 'selected' : '';
-            detailBox.innerHTML += `<div class="stats-item ${isActive}" onclick="toggleRep('${key}')"><span>${key}</span> <span class="stats-count">${counts[key]}</span></div>`; 
+        const counts = {}; filtered.forEach(d => counts[d.rep_name] = (counts[d.rep_name] || 0) + 1);
+        const detailBox = document.getElementById('stats-detail'); detailBox.innerHTML = "";
+        Object.keys(counts).sort().forEach(name => {
+            const div = document.createElement('div'); div.className = `stats-item ${activeReps.has(name)?'selected':''}`;
+            div.innerHTML = `${name} <span class="stats-count">${counts[name]}</span>`;
+            div.onclick = () => toggleRep(name); detailBox.appendChild(div);
         });
 
-        let finalTargets = filtered;
-        if(activeReps.size > 0) {
-            finalTargets = filtered.filter(d => activeReps.has(d.rep_name || "担当なし"));
-        }
-
-        document.getElementById('stats-total-text').innerText = mapSyncMode ? `地図中心から近い順` : `検索結果: ${finalTargets.length}件`;
-        document.getElementById('display-count-text').innerText = `表示中: ${Math.min(finalTargets.length, currentLimit)}`;
-
-        const displayTargets = finalTargets.slice(0, currentLimit);
+        let targets = activeReps.size ? filtered.filter(d => activeReps.has(d.rep_name)) : filtered;
+        document.getElementById('stats-total-text').innerText = mapSyncMode ? `地図中心から近い順` : `検索結果: ${targets.length}件`;
+        document.getElementById('display-count-text').innerText = `表示中: ${Math.min(targets.length, currentLimit)}`;
+        
+        const displayTargets = targets.slice(0, currentLimit);
         updateMapPins(displayTargets);
 
         displayTargets.forEach(c => {
             const isMe = targetReps.includes(c.rep_name);
-            const color = isMe ? "#007AFF" : "#FF3B30";
-            const div = document.createElement('div');
-            div.className = 'customer-item';
-            div.innerHTML = `<div style="flex:1;"><div class="info-main"><span style="background:${color};width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:8px;"></span>${c.name}</div><div class="info-sub"><span class="tag">${c.r_code||"-"}</span>${c.rep_name||""}</div>${c.tel ? `<div class="info-sub">📞 <a href="tel:${c.tel}" style="color:#007AFF;text-decoration:none;font-weight:bold;">${c.tel}</a></div>` : ""}<div class="info-sub">${c.address}</div>${c.note ? `<div class="info-sub" style="color:#E6B800;margin-top:2px;">📝 ${c.note}</div>` : ""}</div><div class="action-area"><a href="javascript:void(0)" onclick="openEdit('${c.id}')" class="icon-btn" title="編集">✎</a><a href="javascript:void(0)" onclick="panToMap(${c.lat}, ${c.lng})" class="icon-btn map" title="地図">📍</a><a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(c.address)}&travelmode=walking" target="_blank" class="icon-btn call" title="ルート">🚶</a></div>`;
+            const div = document.createElement('div'); div.className = 'customer-item';
+            div.innerHTML = `<div style="flex:1;"><div class="info-main"><span style="background:${isMe?'#007AFF':'#FF3B30'};width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:8px;"></span>${c.name}</div><div class="info-sub"><span class="tag">${c.r_code}</span>${c.rep_name}</div><div class="info-sub">📞 ${c.tel} <button class="btn-copy" onclick="copyToClipboard('${c.tel}')">コピー</button></div><div class="info-sub">${c.address}</div><div style="font-size:0.75rem;color:#E6B800;margin-top:4px;">${c.note?'📝 '+c.note:''}</div></div><div class="action-area"><a href="tel:${c.tel}" class="icon-btn call">📞</a><button onclick="panToMap(${c.lat},${c.lng})" class="icon-btn map">📍</button></div>`;
             area.appendChild(div);
         });
         
         const btnArea = document.getElementById('load-more-btn');
-        btnArea.style.display = (finalTargets.length > currentLimit && document.getElementById('limitSelect').value !== 'ALL') ? 'block' : 'none';
+        btnArea.style.display = (targets.length > currentLimit && document.getElementById('limitSelect').value !== 'ALL') ? 'block' : 'none';
         const step = parseInt(document.getElementById('limitSelect').value) || 100;
-        btnArea.innerText = `👇 さらに${step}件表示 (残り ${finalTargets.length - currentLimit}件)`;
+        btnArea.innerText = `👇 さらに${step}件表示`;
     }
 
-    async function shareOrDownload() {
-        if(db.length == 0) return alert("データがありません");
-        const json = JSON.stringify(db);
-        const fileName = `map_db_${new Date().toISOString().slice(0,10)}.json`;
-        const file = new File([json], fileName, { type: "application/json" });
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            try { await navigator.share({ files: [file], title: '顧客マップDB', text: 'データバックアップ' }); return; } catch (e) {}
-        }
-        const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([json], {type:"application/json"})); a.download = fileName; a.click();
-    }
+    function panToMap(lat, lng) { map.setZoom(17); map.panTo({lat, lng}); if(window.innerWidth < 900) document.querySelector('.left-section').scrollIntoView({behavior:'smooth'}); }
+    function loadMore() { currentLimit += parseInt(document.getElementById('limitSelect').value) || 100; render(); }
+    
+    // ★ 編集モーダルのチップ表示を動的に
+    function openEdit(id) { 
+        const d=db.find(x=>x.id===id); 
+        document.getElementById('edit-id').value=d.id; 
+        document.getElementById('edit-note').value=d.note; 
+        document.getElementById('edit-rep').value=d.rep_name; 
+        document.getElementById('edit-name').value=d.name; 
+        document.getElementById('edit-addr').value=d.address; 
+        
+        // チップの描画
+        const chipArea = document.getElementById('edit-chip-area');
+        chipArea.innerHTML = "";
+        quickChips.forEach(t => {
+            const sp = document.createElement('span'); sp.className='chip'; sp.innerText=t;
+            sp.onclick = () => addNote(t);
+            chipArea.appendChild(sp);
+        });
+        // クリアボタン追加
+        const clr = document.createElement('span'); clr.className='chip'; clr.innerText='クリア';
+        clr.onclick = () => document.getElementById('edit-note').value='';
+        chipArea.appendChild(clr);
 
-    function openEdit(id) { const d = db.find(x => x.id === id); if(!d) return; document.getElementById('edit-id').value = d.id; document.getElementById('orig-addr').value = d.address; document.getElementById('edit-rep').value = d.rep_name||""; document.getElementById('edit-r').value = d.r_code||""; document.getElementById('edit-name').value = d.name; document.getElementById('edit-tel').value = d.tel||""; document.getElementById('edit-addr').value = d.address; document.getElementById('edit-note').value = d.note||""; document.getElementById('editModal').style.display='flex'; }
+        document.getElementById('editModal').style.display='flex'; 
+    }
+    
     function closeModal() { document.getElementById('editModal').style.display='none'; }
-    async function saveEdit() { 
-        const id = document.getElementById('edit-id').value; const idx = db.findIndex(x => x.id === id); 
-        if(idx === -1) return;
-        const newAddr = document.getElementById('edit-addr').value.trim(); 
-        db[idx].rep_name = document.getElementById('edit-rep').value; 
-        db[idx].r_code = document.getElementById('edit-r').value; 
-        db[idx].name = document.getElementById('edit-name').value; 
-        db[idx].tel = document.getElementById('edit-tel').value; 
-        db[idx].address = newAddr; 
-        db[idx].note = document.getElementById('edit-note').value; 
-        if(newAddr !== document.getElementById('orig-addr').value) { 
-            try { 
-                const c = await new Promise((res,rej) => geocoder.geocode({address:newAddr}, (r,s)=> s==='OK'?res(r[0].geometry.location):rej(s))); 
-                db[idx].lat = c.lat(); db[idx].lng = c.lng(); 
-                alert("住所から位置を更新しました"); 
-            } catch(e) { alert("住所の解析に失敗しました"); } 
-        } 
-        saveDB(); render(); closeModal(); 
+    function saveEdit() {
+        const id=document.getElementById('edit-id').value; const idx=db.findIndex(x=>x.id===id);
+        db[idx].note = document.getElementById('edit-note').value; db[idx].rep_name = document.getElementById('edit-rep').value; db[idx].name = document.getElementById('edit-name').value;
+        saveDB(); render(); closeModal();
     }
-    function deleteCustomer() { if(confirm("削除しますか？")) { db = db.filter(x => x.id !== document.getElementById('edit-id').value); saveDB(); render(); closeModal(); } }
-    function uploadData(i) { const f=i.files[0]; if(!f)return; const r=new FileReader(); r.onload=e=>{try{if(confirm("読込しますか？")){db=JSON.parse(e.target.result);saveDB();populateFilters();resetAndRender();alert("完了");}}catch(z){alert("失敗");}}; r.readAsText(f); }
+    function shareOrDownload() { const blob = new Blob([JSON.stringify(db)], {type: 'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `map_data.json`; a.click(); }
+    function uploadData(i) { const r = new FileReader(); r.onload = e => { db = JSON.parse(e.target.result); saveDB(); populateFilters(); render(); }; r.readAsText(i.files[0]); }
     function saveDB() { localStorage.setItem(DB_NAME, JSON.stringify(db)); }
-    function clearAll() { if(confirm("本当に全削除しますか？")) { localStorage.removeItem(DB_NAME); location.reload(); } }
+    function clearAll() { if(confirm("全削除？")) { localStorage.removeItem(DB_NAME); location.reload(); } }
 </script>
 </body>
 </html>
