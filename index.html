@@ -12,6 +12,7 @@
         }
         body { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; background-color: var(--bg); color: var(--text-main); margin: 0; padding: 0; height: 100vh; overflow-y: auto; -webkit-tap-highlight-color: transparent; }
 
+        /* --- レイアウト --- */
         .app-container { display: flex; flex-direction: column; height: 100%; max-width: 1600px; margin: 0 auto; padding: 15px; box-sizing: border-box; gap: 15px; }
         @media (min-width: 900px) {
             body { overflow: hidden; }
@@ -26,15 +27,18 @@
             .right-section { padding-bottom: 100px; }
         }
 
+        /* --- UIパーツ --- */
         .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         h1 { font-size: 1.3rem; font-weight: 800; margin: 0; letter-spacing: -0.5px; }
         .btn-settings { background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); border: 1px solid rgba(0,0,0,0.1); padding: 8px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; cursor: pointer; color: var(--primary); display: flex; align-items: center; gap: 4px; }
 
+        /* 検索バー */
         .search-row { display: flex; gap: 10px; margin-bottom: 5px; }
         .place-search-box { flex: 1; display: flex; align-items: center; background: #fff; border-radius: 12px; padding: 2px 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid transparent; }
         .place-search-input { flex: 1; border: none; padding: 10px; font-size: 0.95rem; border-radius: 12px; outline: none; }
         .place-search-btn { background: none; border: none; font-size: 1.2rem; padding: 0 10px; color: var(--primary); cursor: pointer; }
 
+        /* マップ */
         #map-area { background: #E5E5EA; width: 100%; height: 100%; }
         #google-map-view { width: 100%; height: 100%; }
         .btn-current-loc { position: absolute; bottom: 25px; right: 15px; z-index: 10; width: 50px; height: 50px; background: #fff; border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.15); border: none; font-size: 1.6rem; color: #555; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
@@ -49,6 +53,7 @@
         input:checked + .slider { background-color: var(--primary); }
         input:checked + .slider:before { transform: translateX(16px); }
 
+        /* リストエリア */
         .filter-area { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
         select { width: 100%; padding: 10px; border-radius: 10px; border: none; background: #fff; font-weight: 700; color: var(--primary); font-size: 0.85rem; box-shadow: 0 2px 6px rgba(0,0,0,0.03); appearance: none; -webkit-appearance: none; text-align: center; }
         .list-search-box { position: relative; margin-bottom: 15px; }
@@ -74,6 +79,7 @@
         .icon-btn.call { color: #34C759; background: #E8F5E9; }
         .icon-btn.map { color: var(--primary); background: #E3F2FD; }
 
+        /* メニュー・モーダル・その他 */
         .toggle-card { background: #fff; border-radius: 14px; margin-top: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); overflow: hidden; }
         .toggle-header { padding: 16px; font-weight: 800; font-size: 0.95rem; cursor: pointer; display: flex; justify-content: space-between; background: #fff; }
         .toggle-content { padding: 15px; display: none; border-top: 1px solid #f5f5f5; }
@@ -89,15 +95,12 @@
         .modal-content { background:#fff; padding:24px; border-radius:20px; width:90%; max-width:400px; max-height:85vh; overflow-y:auto; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
         .settings-section { border: 1px solid #f0f0f0; padding: 12px; border-radius: 10px; margin-bottom: 15px; }
         .rep-checklist { max-height: 150px; overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 5px;}
-        #map-placeholder-msg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(255,255,255,0.9); padding: 20px; border-radius: 16px; font-weight: bold; color: #555; pointer-events: none; text-align: center; width: 80%; }
+        #map-placeholder-msg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(255,255,255,0.95); padding: 20px; border-radius: 16px; font-weight: bold; color: #333; pointer-events: none; text-align: center; width: 80%; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
 
-        /* ★ ポップアップ（InfoWindow）スタイル */
-        .info-window-container {
-            font-family: sans-serif; padding: 0 5px 5px 0; max-width: 260px; max-height: 250px; overflow-y: auto;
-        }
+        /* ポップアップ */
+        .info-window-container { font-family: sans-serif; padding: 0 5px 5px 0; max-width: 260px; max-height: 250px; overflow-y: auto; }
         .info-window-card { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
         .info-window-card:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
-        
         .info-title { font-weight: 800; font-size: 1.05rem; margin-bottom: 4px; line-height: 1.3; }
         .info-meta { font-size: 0.75rem; color: #555; margin-bottom: 6px; background: #f5f5f5; padding: 3px 6px; border-radius: 4px; display: inline-block;}
         .info-tel { font-weight: bold; color: var(--primary); font-size: 0.9rem; text-decoration: none; margin-bottom: 4px; display: block;}
@@ -121,7 +124,7 @@
 
         <div class="map-wrapper">
             <div id="google-map-view"></div>
-            <span id="map-placeholder-msg">APIキーを設定すると<br>地図が表示されます</span>
+            <div id="map-placeholder-msg">地図を準備中...</div>
             
             <div class="map-sync-wrapper">
                 <span>連動</span>
@@ -260,9 +263,19 @@
         const d = localStorage.getItem(DB_NAME);
         const tr = localStorage.getItem('map_target_reps_json');
         if(tr) { try { targetReps = JSON.parse(tr); } catch(e) { targetReps=[]; } }
-        if(k) document.getElementById('apiKey').value = k;
+        
+        // ★ 自動復旧ロジック
         if(d) { try { db = JSON.parse(d); populateFilters(); resetAndRender(); } catch(e){ db=[]; } }
-        if(k) initSystem(k).then(()=>{ document.getElementById('map-placeholder-msg').style.display='none'; }).catch(()=>{});
+        
+        if(k) {
+            document.getElementById('apiKey').value = k;
+            document.getElementById('map-placeholder-msg').innerText = "🔑 保存されたキーで地図を起動中...";
+            // すぐに地図起動を試みる
+            initSystem(k);
+        } else {
+            document.getElementById('map-placeholder-msg').innerHTML = "APIキーを設定すると<br>地図が表示されます";
+        }
+        
         document.getElementById('current-db-name').innerText = DB_NAME;
     };
 
@@ -276,7 +289,6 @@
         else {
             allReps.forEach(name => {
                 const div = document.createElement('div');
-                // チェックボックスの行間を少し広げる
                 div.style.padding = "4px 0";
                 const isChecked = targetReps.includes(name) ? "checked" : "";
                 div.innerHTML = `<label style="display:flex;align-items:center;cursor:pointer;margin:0;"><input type="checkbox" value="${name}" ${isChecked} onchange="toggleTargetRep(this)" style="width:auto;margin-right:8px;"> ${name}</label>`;
@@ -336,7 +348,11 @@
             }
             document.getElementById('map-placeholder-msg').style.display='none';
             if(db.length > 0) render(); 
-        } catch(e) { log("初期化エラー: "+e); }
+        } catch(e) { 
+            // エラー時はメッセージを戻す
+            document.getElementById('map-placeholder-msg').innerText = "APIキーのエラーまたは読込失敗";
+            log("初期化エラー: "+e); 
+        }
     }
 
     function updateGpsBtnState() {
@@ -436,7 +452,6 @@
         } catch(e) { alert("エラー: " + e.message); } finally { btn.disabled = false; btn.innerText = "登録＆分析スタート"; }
     }
 
-    // ★ 重複ピン対応＆検索ハイブリッドロジック
     function updateMapPins(displayTargets) {
         if(!map || !AdvancedMarkerElement) return;
         markers.forEach(m => m.setMap(null)); markers = [];
@@ -465,7 +480,6 @@
             pinsToShow = mapBaseData.slice(0, limit);
         }
 
-        // ★ ピンのグルーピング処理 (座標が同じものをまとめる)
         const grouped = {};
         pinsToShow.forEach(c => {
             if(c.lat && c.lng) {
@@ -475,12 +489,10 @@
             }
         });
 
-        // グループごとにピン作成
         Object.keys(grouped).forEach(key => {
             const group = grouped[key];
-            const first = group[0]; // 代表座標
+            const first = group[0]; 
             
-            // 色決定ロジック: グループ内に自分の担当があれば青、なければ赤。検索ヒットがあれば黄色。
             let isMe = false;
             let isHit = false;
             group.forEach(c => {
@@ -511,7 +523,6 @@
 
             const m = new AdvancedMarkerElement({ position: {lat:first.lat, lng:first.lng}, map: map, title: first.name, content: pinView, zIndex: zIndex });
             
-            // ★ リスト表示用HTML生成
             let listHtml = "";
             group.forEach(c => {
                 const noteHtml = c.note ? `<div style="background:#fff9c4;padding:4px;font-size:0.75rem;margin-bottom:5px;border-radius:4px;">📝 ${c.note}</div>` : "";
